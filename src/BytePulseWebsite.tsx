@@ -16,6 +16,9 @@ import {
   CheckCircle2,
   Quote,
   Activity,
+  Sun,
+  Moon,
+  ChevronDown,
 } from "lucide-react";
 
 /**
@@ -72,21 +75,21 @@ const SERVICES = [
 
 const PROJECTS = [
   {
-    name: "Northline Ledger",
+    name: "StormyMart",
     category: "FinTech · Web App",
-    desc: "A real-time expense and invoicing platform for small agencies, built on a typed React front end and a Node/Postgres core.",
+    desc: "STORMY MART is a dynamic online store that aims to provide a seamless and enjoyable shopping experience. We're passionate about delivering high-quality products that cater to your needs and preferences. Our mission is to make your life easier by offering a wide range of carefully curated products to enhance your everyday life. Whether you're looking for trendy fashion accessories, innovative gadgets, or unique home decor items, we've got you covered. We believe that every purchase should be an opportunity to express your style and personality.",
     tags: ["React", "TypeScript", "PostgreSQL"],
   },
   {
-    name: "Harbor & Co.",
+    name: "SplitShare",
     category: "E-commerce",
     desc: "A headless storefront for a home-goods retailer, with sub-second page loads and a custom inventory dashboard.",
     tags: ["Next.js", "Stripe", "Sanity"],
   },
   {
-    name: "Fieldwork",
+    name: "InVoice-Maker",
     category: "SaaS · Mobile",
-    desc: "Offline-first job scheduling for field crews, syncing seamlessly the moment a signal comes back.",
+    desc: "Invoice-Maker is your go-to invoicing solution for both business and personal use. Whether you're a freelancer, or small business owner, or need to manage invoices efficiently, this app has everything you need—completely ad-free and free for life!",
     tags: ["React Native", "Node.js", "Redis"],
   },
   {
@@ -152,19 +155,19 @@ const TESTIMONIALS = [
     quote:
       "They shipped in six weeks what our last vendor couldn't finish in six months, and it hasn't gone down once.",
     name: "Amara Chowdhury",
-    role: "COO, Northline Ledger",
+    role: "COO, StormyMart",
   },
   {
     quote:
       "BytePulse felt like an extension of our own team from the first call — sharp questions, clear timelines, no surprises.",
     name: "David Ferreira",
-    role: "Founder, Harbor & Co.",
+    role: "Founder, SplitShare",
   },
   {
     quote:
       "Our field team finally has software that works the way they do, offline included. Adoption was immediate.",
     name: "Priya Nair",
-    role: "Ops Director, Fieldwork",
+    role: "Ops Director, InVoice-Maker",
   },
 ];
 
@@ -276,7 +279,15 @@ const PulseMark: React.FC<{ size?: number }> = ({ size = 34 }) => (
 export default function BytePulseSite() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [formStatus, setFormStatus] = useState<"idle" | "sent">("idle");
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [formStatus, setFormStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    company: "",
+    projectType: "",
+    message: "",
+  });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -284,13 +295,46 @@ export default function BytePulseSite() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormStatus("sent");
+  const handleFieldChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormStatus("sending");
+
+    try {
+      const response = await fetch("https://formspree.io/f/mqeraazo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          company: formData.company,
+          projectType: formData.projectType,
+          message: formData.message,
+        }),
+      });
+
+      if (response.ok) {
+        setFormStatus("sent");
+      } else {
+        setFormStatus("error");
+      }
+    } catch (err) {
+      setFormStatus("error");
+    }
+  };
+
+  const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
+
   return (
-    <div className="bp-root">
+    <div className={`bp-root ${theme === "light" ? "light" : ""}`}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
@@ -305,12 +349,37 @@ export default function BytePulseSite() {
           --accent: #49e6d1;
           --accent-soft: rgba(73, 230, 209, 0.14);
           --accent-2: #ff6a49;
+          --nav-bg: rgba(10, 15, 28, 0.72);
+          --nav-bg-scrolled: rgba(10, 15, 28, 0.92);
+          --glow: rgba(73, 230, 209, 0.10);
+          --accent-border: rgba(73, 230, 209, 0.35);
+          --accent-border-soft: rgba(73, 230, 209, 0.25);
+          --btn-primary-text: #05201c;
           font-family: 'Inter', sans-serif;
           background: var(--bg);
           color: var(--text);
           min-height: 100vh;
           position: relative;
           overflow-x: hidden;
+          transition: background 0.3s ease, color 0.3s ease;
+        }
+        .bp-root.light {
+          --bg: #f6f8fb;
+          --bg-alt: #eef1f6;
+          --surface: #ffffff;
+          --surface-2: #f2f5f9;
+          --line: rgba(16, 23, 38, 0.10);
+          --text: #101726;
+          --muted: #5b6478;
+          --accent: #0e9c8c;
+          --accent-soft: rgba(14, 156, 140, 0.12);
+          --accent-2: #d9502c;
+          --nav-bg: rgba(246, 248, 251, 0.75);
+          --nav-bg-scrolled: rgba(246, 248, 251, 0.94);
+          --glow: rgba(14, 156, 140, 0.10);
+          --accent-border: rgba(14, 156, 140, 0.35);
+          --accent-border-soft: rgba(14, 156, 140, 0.28);
+          --btn-primary-text: #ffffff;
         }
         .bp-root * { box-sizing: border-box; }
         .bp-display { font-family: 'Space Grotesk', sans-serif; }
@@ -323,7 +392,7 @@ export default function BytePulseSite() {
           transform: translateX(-50%);
           width: 900px;
           height: 900px;
-          background: radial-gradient(circle, rgba(73,230,209,0.10) 0%, rgba(73,230,209,0) 70%);
+          background: radial-gradient(circle, var(--glow) 0%, rgba(73,230,209,0) 70%);
           pointer-events: none;
           z-index: 0;
         }
@@ -333,15 +402,15 @@ export default function BytePulseSite() {
           top: 0;
           z-index: 50;
           backdrop-filter: blur(10px);
-          background: rgba(10, 15, 28, 0.72);
+          background: var(--nav-bg);
           border-bottom: 1px solid transparent;
           transition: border-color 0.3s ease, background 0.3s ease;
         }
         .bp-nav.scrolled {
           border-bottom: 1px solid var(--line);
-          background: rgba(10, 15, 28, 0.92);
+          background: var(--nav-bg-scrolled);
         }
-        .bp-logo-ring { stroke: rgba(232,238,245,0.25); }
+        .bp-logo-ring { stroke: var(--line); }
         .bp-logo-line { stroke: var(--accent); filter: drop-shadow(0 0 4px rgba(73,230,209,0.6)); }
         .bp-nav-link {
           color: var(--muted);
@@ -353,9 +422,9 @@ export default function BytePulseSite() {
 
         .bp-btn-primary {
           background: var(--accent);
-          color: #05201c;
+          color: var(--btn-primary-text);
           font-weight: 600;
-          transition: transform 0.18s ease, box-shadow 0.18s ease;
+          transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.2s ease, color 0.2s ease;
           box-shadow: 0 0 0 rgba(73,230,209,0);
         }
         .bp-btn-primary:hover {
@@ -392,7 +461,7 @@ export default function BytePulseSite() {
 
         .bp-pulse-divider { width: 100%; height: 44px; opacity: 0.9; }
         .bp-pulse-path {
-          stroke: rgba(73,230,209,0.55);
+          stroke: var(--accent-border);
           stroke-dasharray: 1400;
           stroke-dashoffset: 1400;
           animation: bp-draw 2.2s ease forwards;
@@ -404,7 +473,7 @@ export default function BytePulseSite() {
           transition: border-color 0.25s ease, transform 0.25s ease, background 0.25s ease;
         }
         .bp-card:hover {
-          border-color: rgba(73,230,209,0.35);
+          border-color: var(--accent-border);
           transform: translateY(-4px);
           background: var(--surface-2);
         }
@@ -414,7 +483,7 @@ export default function BytePulseSite() {
           font-size: 0.72rem;
           color: var(--accent);
           background: var(--accent-soft);
-          border: 1px solid rgba(73,230,209,0.25);
+          border: 1px solid var(--accent-border-soft);
         }
 
         .bp-marquee-track {
@@ -433,7 +502,7 @@ export default function BytePulseSite() {
           opacity: 0.55;
         }
         .bp-step-line {
-          background: linear-gradient(180deg, rgba(73,230,209,0.5), rgba(73,230,209,0));
+          background: linear-gradient(180deg, var(--accent-border), rgba(73,230,209,0));
         }
 
         .bp-input {
@@ -443,7 +512,7 @@ export default function BytePulseSite() {
           transition: border-color 0.2s ease;
         }
         .bp-input:focus { outline: none; border-color: var(--accent); }
-        .bp-input::placeholder { color: #6b7690; }
+        .bp-input::placeholder { color: var(--muted); }
 
         .bp-footer { background: var(--bg-alt); border-top: 1px solid var(--line); }
 
@@ -452,7 +521,15 @@ export default function BytePulseSite() {
           border: 1px solid var(--line);
           transition: color 0.2s ease, border-color 0.2s ease;
         }
-        .bp-social:hover { color: var(--accent); border-color: rgba(73,230,209,0.35); }
+        .bp-social:hover { color: var(--accent); border-color: var(--accent-border); }
+
+        .bp-theme-toggle {
+          border: 1px solid var(--line);
+          color: var(--text);
+          background: transparent;
+          transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+        }
+        .bp-theme-toggle:hover { border-color: var(--accent-border); color: var(--accent); }
 
         a, button { cursor: pointer; }
 
@@ -482,18 +559,34 @@ export default function BytePulseSite() {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
+            <button
+              onClick={toggleTheme}
+              className="bp-theme-toggle w-10 h-10 rounded-full flex items-center justify-center"
+              aria-label="Toggle light/dark mode"
+            >
+              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
             <a href="#contact" className="bp-btn-primary px-5 py-2.5 rounded-full text-sm">
               Start a project
             </a>
           </div>
 
-          <button
-            className="md:hidden text-[var(--text)]"
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label="Toggle menu"
-          >
-            {menuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+            <button
+              onClick={toggleTheme}
+              className="bp-theme-toggle w-10 h-10 rounded-full flex items-center justify-center"
+              aria-label="Toggle light/dark mode"
+            >
+              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+            <button
+              className="text-[var(--text)]"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label="Toggle menu"
+            >
+              {menuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
 
         {menuOpen && (
@@ -618,16 +711,11 @@ export default function BytePulseSite() {
         <div className="grid md:grid-cols-2 gap-5 mt-14">
           {PROJECTS.map((p, i) => (
             <Reveal key={p.name} delay={i * 80}>
-              <a href="#contact" className="bp-card rounded-2xl p-8 flex flex-col h-full group block">
+              <div className="bp-card rounded-2xl p-8 flex flex-col h-full">
                 <div className="flex items-start justify-between mb-6">
                   <span className="bp-mono text-xs" style={{ color: "var(--muted)" }}>
                     {p.category}
                   </span>
-                  <ArrowUpRight
-                    size={18}
-                    color="var(--muted)"
-                    className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
-                  />
                 </div>
                 <h3 className="bp-display font-semibold text-2xl mb-3">{p.name}</h3>
                 <p className="text-sm leading-relaxed mb-6" style={{ color: "var(--muted)" }}>
@@ -640,16 +728,10 @@ export default function BytePulseSite() {
                     </span>
                   ))}
                 </div>
-              </a>
+              </div>
             </Reveal>
           ))}
         </div>
-
-        <Reveal delay={200}>
-          <p className="mt-8 text-sm" style={{ color: "var(--muted)" }}>
-            Placeholder projects shown above — swap these for your real case studies any time.
-          </p>
-        </Reveal>
       </section>
 
       {/* --------------------------------- PROCESS ---------------------------------- */}
@@ -828,35 +910,82 @@ export default function BytePulseSite() {
             {formStatus === "sent" ? (
               <div className="bp-card rounded-2xl p-10 h-full flex flex-col items-center justify-center text-center">
                 <CheckCircle2 size={36} color="var(--accent)" className="mb-4" />
-                <h3 className="bp-display font-semibold text-xl mb-2">Message sent</h3>
+                <h3 className="bp-display font-semibold text-xl mb-2">Message sent!</h3>
                 <p className="text-sm max-w-xs" style={{ color: "var(--muted)" }}>
-                  Thanks for reaching out — this is a demo form, so wire it up to your email or
-                  CRM of choice when you're ready.
+                  Thanks for reaching out — we'll reply to {formData.email} within one business day.
                 </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="bp-card rounded-2xl p-8 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <input required placeholder="Full name" className="bp-input rounded-lg px-4 py-3 text-sm col-span-2 sm:col-span-1" />
-                  <input required type="email" placeholder="Email address" className="bp-input rounded-lg px-4 py-3 text-sm col-span-2 sm:col-span-1" />
+                  <input
+                    required
+                    name="name"
+                    value={formData.name}
+                    onChange={handleFieldChange}
+                    placeholder="Full name"
+                    className="bp-input rounded-lg px-4 py-3 text-sm col-span-2 sm:col-span-1"
+                  />
+                  <input
+                    required
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleFieldChange}
+                    placeholder="Email address"
+                    className="bp-input rounded-lg px-4 py-3 text-sm col-span-2 sm:col-span-1"
+                  />
                 </div>
-                <input placeholder="Company (optional)" className="bp-input rounded-lg px-4 py-3 text-sm w-full" />
-                <select required defaultValue="" className="bp-input rounded-lg px-4 py-3 text-sm w-full">
-                  <option value="" disabled>What do you need built?</option>
-                  <option>Web application</option>
-                  <option>Custom software</option>
-                  <option>Website</option>
-                  <option>Something else</option>
-                </select>
+                <input
+                  name="company"
+                  value={formData.company}
+                  onChange={handleFieldChange}
+                  placeholder="Company (optional)"
+                  className="bp-input rounded-lg px-4 py-3 text-sm w-full"
+                />
+                <div className="relative w-full">
+                  <select
+                    required
+                    name="projectType"
+                    value={formData.projectType}
+                    onChange={handleFieldChange}
+                    className="bp-input rounded-lg pl-4 pr-10 py-3 text-sm w-full appearance-none"
+                  >
+                    <option value="" disabled>What do you need built?</option>
+                    <option>Web application</option>
+                    <option>Custom software</option>
+                    <option>Website</option>
+                    <option>Something else</option>
+                  </select>
+                  <ChevronDown
+                    size={16}
+                    color="var(--muted)"
+                    className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+                  />
+                </div>
                 <textarea
                   required
+                  name="message"
+                  value={formData.message}
+                  onChange={handleFieldChange}
                   placeholder="A few lines about your project"
                   rows={4}
                   className="bp-input rounded-lg px-4 py-3 text-sm w-full resize-none"
                 />
-                <button type="submit" className="bp-btn-primary w-full rounded-lg py-3 text-sm flex items-center justify-center gap-2">
-                  Send message <ArrowRight size={16} />
+                <button
+                  type="submit"
+                  disabled={formStatus === "sending"}
+                  className="bp-btn-primary w-full rounded-lg py-3 text-sm flex items-center justify-center gap-2 disabled:opacity-60"
+                >
+                  {formStatus === "sending" ? "Sending..." : "Send message"}
+                  {formStatus !== "sending" && <ArrowRight size={16} />}
                 </button>
+
+                {formStatus === "error" && (
+                  <p className="text-sm text-center" style={{ color: "var(--accent-2)" }}>
+                    Something went wrong — please email us directly at bytepulsetech01@gmail.com.
+                  </p>
+                )}
               </form>
             )}
           </Reveal>
