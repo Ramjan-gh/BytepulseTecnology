@@ -1,48 +1,33 @@
-import React, { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
 import { ArrowUpRight, Sparkles } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { SERVICES } from "./data";
 
-export const Services: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
+interface ServicesProps {
+  onWebApplications: () => void;
+  onCustomSoftware: () => void;
+  onWebsiteAndStorefronts: () => void;
+  onCloudAndDevOps: () => void;
+  onQualityAndSecurity: () => void;
+  onMaintenanceAndSupport: () => void;
+}
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
-
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 24,
-    restDelta: 0.001,
-  });
-
-  const headerY = useTransform(smoothProgress, [0, 1], [-20, 20]);
-  const centerCardY = useTransform(smoothProgress, [0, 0.5, 1], [30, 0, -30]);
-  const sideCardsY = useTransform(smoothProgress, [0, 0.5, 1], [60, 0, -60]);
-  const glowScale = useTransform(smoothProgress, [0, 0.5, 1], [0.8, 1.2, 0.8]);
-
+export const Services: React.FC<ServicesProps> = ({
+  onWebApplications,
+  onCustomSoftware,
+  onWebsiteAndStorefronts,
+  onCloudAndDevOps,
+  onQualityAndSecurity,
+  onMaintenanceAndSupport,
+}) => {
   return (
     <section
-      ref={containerRef}
       id="services"
       className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-24 md:py-36 overflow-hidden"
     >
-      {/* Background Glow */}
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full -z-10 opacity-20 blur-3xl pointer-events-none transform-gpu"
-        style={{
-          background: "var(--accent)",
-          scale: glowScale,
-        }}
-      />
-
-      {/* Header with Parallax */}
-      <motion.div
-        style={{ y: headerY }}
-        className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-6 transform-gpu"
-      >
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-6">
         <div>
           <Reveal>
             <div
@@ -80,98 +65,103 @@ export const Services: React.FC = () => {
             or scaling production infrastructure.
           </p>
         </Reveal>
-      </motion.div>
+      </div>
 
       {/* Services Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-        {SERVICES.map((s, i) => {
-          const cardY = i === 1 ? centerCardY : sideCardsY;
-
-          return (
-            /* Outer Wrapper: Dedicated solely to Scroll Parallax (continuous motion) */
-            <motion.div
-              key={s.title}
-              style={{ y: cardY }}
-              className="h-full transform-gpu will-change-transform"
+        {SERVICES.map((s, i) => (
+          <motion.div
+            key={s.title}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.4, delay: i * 0.08 }}
+            className="h-full cursor-pointer"
+            onClick={() => {
+              console.log(`Clicked on ${s.title}`);
+              if (s.title === "Web Applications") {
+                onWebApplications();
+              }
+              if (s.title === "Custom Software") {
+                onCustomSoftware();
+              }
+              if (s.title === "Websites & Storefronts") {
+                onWebsiteAndStorefronts();
+              }
+              if (s.title === "Cloud & DevOps") {
+                onCloudAndDevOps();
+              }
+              if (s.title === "Quality & Security") {
+                onQualityAndSecurity();
+              }
+              if (s.title === "Maintenance & Support") {
+                onMaintenanceAndSupport();
+              }
+            }}
+          >
+            <div
+              className="group relative rounded-2xl p-6 sm:p-8 h-full flex flex-col justify-between border transition-all duration-300 hover:shadow-xl hover:border-[var(--accent)]"
+              style={{
+                background: "var(--surface)",
+                borderColor: "var(--line)",
+                boxShadow: "var(--shadow-lift)",
+              }}
             >
-              {/* Inner Wrapper: Handles scroll reveal & scaling */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.4, delay: i * 0.08, ease: "easeOut" }}
-                className="h-full"
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6"
+                    style={{
+                      background: "var(--accent-soft)",
+                      color: "var(--accent)",
+                    }}
+                  >
+                    <s.icon size={22} />
+                  </div>
+
+                  <span
+                    className="bp-mono text-xs font-bold opacity-30 group-hover:opacity-100 transition-opacity"
+                    style={{ color: "var(--muted)" }}
+                  >
+                    0{i + 1}
+                  </span>
+                </div>
+
+                <h3
+                  className="bp-display font-semibold text-xl mb-3 tracking-tight"
+                  style={{ color: "var(--ink)" }}
+                >
+                  {s.title}
+                </h3>
+
+                <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+                  {s.desc}
+                </p>
+              </div>
+
+              <div
+                className="pt-6 mt-6 border-t flex items-center justify-between bp-mono text-xs font-medium"
+                style={{ borderColor: "var(--line)" }}
               >
+                <span
+                  className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ color: "var(--accent)" }}
+                >
+                  Learn scope
+                </span>
                 <div
-                  className="group relative rounded-2xl p-6 sm:p-8 h-full flex flex-col justify-between border transition-all duration-300 hover:shadow-xl hover:border-[var(--accent)]"
+                  className="p-1.5 rounded-lg transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
                   style={{
-                    background: "var(--surface)",
-                    borderColor: "var(--line)",
-                    boxShadow: "var(--shadow-lift)",
+                    background: "var(--surface-2)",
+                    color: "var(--ink)",
                   }}
                 >
-                  {/* Top Content */}
-                  <div>
-                    <div className="flex items-center justify-between mb-6">
-                      <div
-                        className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6"
-                        style={{
-                          background: "var(--accent-soft)",
-                          color: "var(--accent)",
-                        }}
-                      >
-                        <s.icon size={22} />
-                      </div>
-
-                      <span
-                        className="bp-mono text-xs font-bold opacity-30 group-hover:opacity-100 transition-opacity"
-                        style={{ color: "var(--muted)" }}
-                      >
-                        0{i + 1}
-                      </span>
-                    </div>
-
-                    <h3
-                      className="bp-display font-semibold text-xl mb-3 tracking-tight"
-                      style={{ color: "var(--ink)" }}
-                    >
-                      {s.title}
-                    </h3>
-
-                    <p
-                      className="text-sm leading-relaxed"
-                      style={{ color: "var(--muted)" }}
-                    >
-                      {s.desc}
-                    </p>
-                  </div>
-
-                  {/* Bottom Action Footer */}
-                  <div
-                    className="pt-6 mt-6 border-t flex items-center justify-between bp-mono text-xs font-medium"
-                    style={{ borderColor: "var(--line)" }}
-                  >
-                    <span
-                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      style={{ color: "var(--accent)" }}
-                    >
-                      Learn scope
-                    </span>
-                    <div
-                      className="p-1.5 rounded-lg transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
-                      style={{
-                        background: "var(--surface-2)",
-                        color: "var(--ink)",
-                      }}
-                    >
-                      <ArrowUpRight size={14} />
-                    </div>
-                  </div>
+                  <ArrowUpRight size={14} />
                 </div>
-              </motion.div>
-            </motion.div>
-          );
-        })}
+              </div>
+            </div>
+          </motion.div>
+        ))}
       </div>
     </section>
   );

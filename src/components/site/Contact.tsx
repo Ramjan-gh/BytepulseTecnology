@@ -33,25 +33,9 @@ export const Contact: React.FC = () => {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
+  
 
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 20 });
-
-  // Parallax + fade-in are both derived from the same scroll source now,
-  // instead of running a separate whileInView/IntersectionObserver alongside
-  // the useScroll listener. One source of truth, one set of per-frame updates.
-  const cardY = useTransform(smoothProgress, [0, 0.5, 1], [30, 0, -30]);
-  const cardScale = useTransform(smoothProgress, [0, 0.5, 1], [0.96, 1, 0.96]);
-  const cardOpacity = useTransform(smoothProgress, [0, 0.15], [0, 1]);
-
-  // Glow scale still tracks scroll, but no longer paired with a blur filter
-  // (see background style below) — scaling a gradient is cheap, scaling a
-  // blurred element is not.
-  const glowScale = useTransform(smoothProgress, [0, 0.5, 1], [0.8, 1.25, 0.8]);
-
+  
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -94,7 +78,6 @@ export const Contact: React.FC = () => {
         style={{
           background: "radial-gradient(circle, var(--accent) 0%, transparent 70%)",
           opacity: 0.15,
-          scale: glowScale,
         }}
       />
 
@@ -149,9 +132,6 @@ export const Contact: React.FC = () => {
             redundant IntersectionObserver running alongside useScroll. */}
         <motion.div
           style={{
-            y: cardY,
-            scale: cardScale,
-            opacity: cardOpacity,
           }}
         >
           {status === "sent" ? (

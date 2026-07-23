@@ -228,3 +228,11 @@
     transition-duration: 0.001ms !important; 
   }
 }
+
+.bp-blob { position:absolute; width:420px; height:420px; border-radius:9999px; background:var(--accent); opacity:0.15; filter:blur(90px); will-change:transform; }
+.bp-blob-1 { top:-10%; left:10%; animation:bp-float-a 22s ease-in-out infinite; }
+.bp-blob-2 { top:40%; right:5%; animation:bp-float-b 26s ease-in-out infinite; }
+.bp-blob-3 { bottom:-15%; left:35%; animation:bp-float-c 30s ease-in-out infinite; }
+@keyframes bp-float-a { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(60px,40px) scale(1.15);} }
+@keyframes bp-float-b { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-50px,30px) scale(0.9);} }
+@keyframes bp-float-c { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(40px,-50px) scale(1.1);} }
