@@ -56,6 +56,24 @@ const WebsiteAndStorefrontsPage = lazy(() =>
   }))
 );
 
+const CloudAndDevOpsPage = lazy(() =>
+  import("./CloudAndDevOpsPage").then((m) => ({
+    default: m.CloudAndDevOpsPage,
+  }))
+);
+
+const QualityAndSecurityPage = lazy(() =>
+  import("./QualityAndSecurityPage").then((m) => ({
+    default: m.QualityAndSecurityPage,
+  }))
+);
+
+const MaintenanceAndSupportPage = lazy(() =>
+  import("./MaintenanceAndSupportPage").then((m) => ({
+    default: m.MaintenanceAndSupportPage,
+  }))
+);
+
 
 export default function BytePulseSite() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
@@ -142,6 +160,12 @@ export default function BytePulseSite() {
           <CustomSoftwarePage onBack={goHome} />
         ) : page === "websites&storefronts" ? (
           <WebsiteAndStorefrontsPage onBack={goHome} />
+        ) : page === "cloud&devOps" ? (
+          <CloudAndDevOpsPage onBack={goHome} />
+        ) : page === "quality&security" ? (
+          <QualityAndSecurityPage onBack={goHome} />
+        ) : page === "maintenance&support" ? (
+          <MaintenanceAndSupportPage onBack={goHome} />
         ) : (
           <>
             <Hero />

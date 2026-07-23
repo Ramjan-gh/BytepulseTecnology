@@ -68,7 +68,7 @@ export const CustomSoftwarePage: React.FC<CustomSoftwarePageProps> = ({
 
       <button
         onClick={onBack}
-        className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-12"
+        className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-12 cursor-pointer"
         style={{
           background: "var(--surface)",
           borderColor: "var(--line)",

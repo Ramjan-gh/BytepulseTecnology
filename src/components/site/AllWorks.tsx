@@ -27,12 +27,16 @@ export const AllWorks: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             {/* Top Navigation */}
             <div className="mb-12">
                 <button
-                    onClick={onBack}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full ..."
-                >
-                    <ArrowLeft size={14} />
-                    <span>Back to Home</span>
-                </button>
+                              onClick={onBack}
+                              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-12 cursor-pointer"
+                              style={{
+                                background: "var(--surface)",
+                                borderColor: "var(--line)",
+                              }}
+                            >
+                              <ArrowLeft size={15} />
+                              Back to Services
+                            </button>
                 
             </div>
 

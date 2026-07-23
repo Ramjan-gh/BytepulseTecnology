@@ -6,17 +6,19 @@ import {
   Sparkles,
   Layers,
   Cpu,
-  Globe,
-  Zap,
+  Wrench,
+  Clock,
   ShieldCheck,
-  Code2,
+  Zap,
+  Activity,
+  Headphones,
 } from "lucide-react";
 
-interface WebApplicationsPageProps {
+interface MaintenanceAndSupportPageProps {
   onBack: () => void;
 }
 
-export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
+export const MaintenanceAndSupportPage: React.FC<MaintenanceAndSupportPageProps> = ({
   onBack,
 }) => {
   useEffect(() => {
@@ -24,63 +26,63 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
   }, []);
 
   const deliverables = [
-    "Single Page Applications (SPAs) & Server-Side Rendered (SSR) Web Apps",
-    "Real-time Dashboards & Interactive Analytics Portals",
-    "Custom CMS, Admin Controls & Role-Based Access Systems",
-    "Progressive Web Apps (PWAs) with Offline Support & Caching",
-    "API-driven Full-Stack Web Platforms",
+    "SLA-backed 24/7 Monitoring & Incident Response",
+    "Continuous Infrastructure & Security Patch Management",
+    "Performance Optimization & Database Maintenance",
+    "Bug Fixing, Technical Debt Reduction & Feature Updates",
+    "Disaster Recovery Drills & Daily Automated Backups",
   ];
 
   const techStack = [
-    "React",
-    "Next.js",
-    "TypeScript",
-    "Tailwind CSS",
-    "Node.js",
-    "PostgreSQL",
-    "REST & GraphQL",
-    "Vercel / AWS",
+    "Datadog",
+    "PagerDuty",
+    "Sentry",
+    "New Relic",
+    "AWS CloudWatch",
+    "Updown.io",
+    "GitHub Actions",
+    "Docker",
   ];
 
   const features = [
     {
-      icon: Zap,
-      title: "Lightning Fast Performance",
+      icon: Clock,
+      title: "24/7 Operational Uptime",
       description:
-        "Optimized client-side rendering, intelligent asset streaming, and Core Web Vitals tuning for near-instant load times.",
+        "Proactive infrastructure health checks and real-time incident alerting to resolve anomalies before they impact end users.",
     },
     {
       icon: ShieldCheck,
-      title: "Enterprise-Grade Security",
+      title: "Security & Dependencies",
       description:
-        "Robust authentication flows (OAuth, JWT), CSRF/XSS protection, and strict API access controls built in by default.",
+        "Routine dependency upgrades, framework security patching, and vulnerability management to keep system security airtight.",
     },
     {
-      icon: Globe,
-      title: "Scalable Architecture",
+      icon: Activity,
+      title: "Continuous Tuning",
       description:
-        "Clean, modular codebases structured to scale gracefully from initial MVP to hundreds of thousands of daily active users.",
+        "Ongoing query optimization, asset optimization, and scaling adjustments to ensure consistently quick load times.",
     },
   ];
 
   const workflow = [
     {
       step: "01",
-      title: "Discovery & Architecture",
+      title: "Onboarding & Telemetry",
       description:
-        "Mapping user journeys, state management requirements, API integrations, and database schemas.",
+        "Integrating monitoring tools, setting up escalation rules, and running baseline performance and security audits.",
     },
     {
       step: "02",
-      title: "Iterative Engineering",
+      title: "Active Maintenance",
       description:
-        "Building scalable, type-safe frontend components and backend logic with continuous staging previews.",
+        "Executing recurring maintenance tasks, dependency patches, database cleanups, and performance enhancements.",
     },
     {
       step: "03",
-      title: "Optimization & Deployment",
+      title: "Incident & Reporting",
       description:
-        "Lighthouse audits, load testing, automated CI/CD pipeline setup, and zero-downtime production deployment.",
+        "Rapid response to service disruptions, post-mortem analyses, and transparent monthly performance reporting.",
     },
   ];
 
@@ -88,16 +90,16 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
     <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-16 md:py-24">
       {/* Back Button */}
       <button
-              onClick={onBack}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-12 cursor-pointer"
-              style={{
-                background: "var(--surface)",
-                borderColor: "var(--line)",
-              }}
-            >
-              <ArrowLeft size={15} />
-              Back to Services
-            </button>
+                    onClick={onBack}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-12 cursor-pointer"
+                    style={{
+                      background: "var(--surface)",
+                      borderColor: "var(--line)",
+                    }}
+                  >
+                    <ArrowLeft size={15} />
+                    Back to Services
+                  </button>
 
       {/* Hero Header */}
       <motion.div
@@ -115,7 +117,7 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
               color: "var(--accent)",
             }}
           >
-            <Globe size={28} />
+            <Wrench size={28} />
           </div>
           <div
             className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bp-mono text-[11px] font-semibold uppercase tracking-wider border"
@@ -134,15 +136,14 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
           className="bp-display font-bold text-4xl sm:text-5xl md:text-6xl tracking-tight mb-6"
           style={{ color: "var(--ink)" }}
         >
-          Web Applications
+          Maintenance & Support
         </h1>
 
         <p
           className="bp-mono text-base sm:text-lg max-w-3xl leading-relaxed"
           style={{ color: "var(--muted)" }}
         >
-          Building fast, responsive, and resilient web applications designed
-          to deliver seamless user experiences and scale effortlessly under heavy traffic.
+          Ensuring long-term stability, continuous security patching, and optimal peak performance through dedicated application management and proactive support.
         </p>
       </motion.div>
 
@@ -177,7 +178,10 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
               >
                 {item.title}
               </h3>
-              <p className="text-xs sm:text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+              <p
+                className="text-xs sm:text-sm leading-relaxed"
+                style={{ color: "var(--muted)" }}
+              >
                 {item.description}
               </p>
             </motion.div>
@@ -202,7 +206,7 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
             className="flex items-center gap-2 bp-mono text-xs uppercase font-bold tracking-wider mb-6"
             style={{ color: "var(--accent)" }}
           >
-            <Layers size={14} /> Core Deliverables
+            <Layers size={14} /> Core Services & Scope
           </div>
           <ul className="space-y-4">
             {deliverables.map((item) => (
@@ -212,7 +216,10 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
                   className="shrink-0 mt-0.5"
                   style={{ color: "var(--accent)" }}
                 />
-                <span className="text-sm font-medium leading-normal" style={{ color: "var(--ink)" }}>
+                <span
+                  className="text-sm font-medium leading-normal"
+                  style={{ color: "var(--ink)" }}
+                >
                   {item}
                 </span>
               </li>
@@ -235,7 +242,7 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
             className="flex items-center gap-2 bp-mono text-xs uppercase font-bold tracking-wider mb-6"
             style={{ color: "var(--accent)" }}
           >
-            <Cpu size={14} /> Technologies
+            <Cpu size={14} /> Tools & Platforms
           </div>
           <div className="flex flex-wrap gap-2">
             {techStack.map((tech) => (
@@ -266,8 +273,11 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
           borderColor: "var(--line)",
         }}
       >
-        <h2 className="bp-display font-bold text-2xl mb-8" style={{ color: "var(--ink)" }}>
-          Development Workflow
+        <h2
+          className="bp-display font-bold text-2xl mb-8"
+          style={{ color: "var(--ink)" }}
+        >
+          Support Lifecycle
         </h2>
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -286,7 +296,10 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
                 >
                   {step.title}
                 </h3>
-                <p className="text-xs sm:text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+                <p
+                  className="text-xs sm:text-sm leading-relaxed"
+                  style={{ color: "var(--muted)" }}
+                >
                   {step.description}
                 </p>
               </div>

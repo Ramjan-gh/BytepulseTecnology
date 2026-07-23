@@ -6,17 +6,19 @@ import {
   Sparkles,
   Layers,
   Cpu,
-  Globe,
-  Zap,
   ShieldCheck,
-  Code2,
+  Lock,
+  FileCheck,
+  Bug,
+  KeyRound,
+  Eye,
 } from "lucide-react";
 
-interface WebApplicationsPageProps {
+interface QualityAndSecurityPageProps {
   onBack: () => void;
 }
 
-export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
+export const QualityAndSecurityPage: React.FC<QualityAndSecurityPageProps> = ({
   onBack,
 }) => {
   useEffect(() => {
@@ -24,63 +26,63 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
   }, []);
 
   const deliverables = [
-    "Single Page Applications (SPAs) & Server-Side Rendered (SSR) Web Apps",
-    "Real-time Dashboards & Interactive Analytics Portals",
-    "Custom CMS, Admin Controls & Role-Based Access Systems",
-    "Progressive Web Apps (PWAs) with Offline Support & Caching",
-    "API-driven Full-Stack Web Platforms",
+    "Automated Testing Suites (Unit, Integration & End-to-End)",
+    "Penetration Testing & Vulnerability Assessment Reports",
+    "OWASP Top 10 Audit & Security Code Reviews",
+    "Continuous Security Scanning (SAST / DAST Pipeline Integration)",
+    "Regulatory Compliance Framework Readiness (SOC 2, GDPR, HIPAA)",
   ];
 
   const techStack = [
-    "React",
-    "Next.js",
-    "TypeScript",
-    "Tailwind CSS",
-    "Node.js",
-    "PostgreSQL",
-    "REST & GraphQL",
-    "Vercel / AWS",
+    "Jest",
+    "Playwright",
+    "Cypress",
+    "OWASP ZAP",
+    "Snyk",
+    "SonarQube",
+    "Postman",
+    "K6",
   ];
 
   const features = [
     {
-      icon: Zap,
-      title: "Lightning Fast Performance",
-      description:
-        "Optimized client-side rendering, intelligent asset streaming, and Core Web Vitals tuning for near-instant load times.",
-    },
-    {
       icon: ShieldCheck,
-      title: "Enterprise-Grade Security",
+      title: "Automated QA & Testing",
       description:
-        "Robust authentication flows (OAuth, JWT), CSRF/XSS protection, and strict API access controls built in by default.",
+        "Comprehensive automated testing coverage across user journeys to catch regressions early and ensure high software reliability.",
     },
     {
-      icon: Globe,
-      title: "Scalable Architecture",
+      icon: Lock,
+      title: "Security Audits & Hardening",
       description:
-        "Clean, modular codebases structured to scale gracefully from initial MVP to hundreds of thousands of daily active users.",
+        "Deep static/dynamic code analysis, vulnerability assessments, and dependency checks to protect against cyber threats.",
+    },
+    {
+      icon: FileCheck,
+      title: "Compliance Readiness",
+      description:
+        "Structuring data handling, access controls, and encryption standards to ensure readiness for industry security benchmarks.",
     },
   ];
 
   const workflow = [
     {
       step: "01",
-      title: "Discovery & Architecture",
+      title: "Audit & Risk Assessment",
       description:
-        "Mapping user journeys, state management requirements, API integrations, and database schemas.",
+        "Analyzing current codebases, threat vectors, data flows, and test coverage to map security and quality risks.",
     },
     {
       step: "02",
-      title: "Iterative Engineering",
+      title: "Test Automation & Patching",
       description:
-        "Building scalable, type-safe frontend components and backend logic with continuous staging previews.",
+        "Implementing automated E2E/unit test suites and resolving security vulnerabilities identified during audits.",
     },
     {
       step: "03",
-      title: "Optimization & Deployment",
+      title: "Continuous Assurance",
       description:
-        "Lighthouse audits, load testing, automated CI/CD pipeline setup, and zero-downtime production deployment.",
+        "Integrating SAST/DAST tools into CI/CD pipelines for ongoing automated compliance monitoring and quality gating.",
     },
   ];
 
@@ -88,16 +90,16 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
     <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-16 md:py-24">
       {/* Back Button */}
       <button
-              onClick={onBack}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-12 cursor-pointer"
-              style={{
-                background: "var(--surface)",
-                borderColor: "var(--line)",
-              }}
-            >
-              <ArrowLeft size={15} />
-              Back to Services
-            </button>
+                    onClick={onBack}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-12 cursor-pointer"
+                    style={{
+                      background: "var(--surface)",
+                      borderColor: "var(--line)",
+                    }}
+                  >
+                    <ArrowLeft size={15} />
+                    Back to Services
+                  </button>
 
       {/* Hero Header */}
       <motion.div
@@ -115,7 +117,7 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
               color: "var(--accent)",
             }}
           >
-            <Globe size={28} />
+            <ShieldCheck size={28} />
           </div>
           <div
             className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bp-mono text-[11px] font-semibold uppercase tracking-wider border"
@@ -134,15 +136,14 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
           className="bp-display font-bold text-4xl sm:text-5xl md:text-6xl tracking-tight mb-6"
           style={{ color: "var(--ink)" }}
         >
-          Web Applications
+          Quality & Security
         </h1>
 
         <p
           className="bp-mono text-base sm:text-lg max-w-3xl leading-relaxed"
           style={{ color: "var(--muted)" }}
         >
-          Building fast, responsive, and resilient web applications designed
-          to deliver seamless user experiences and scale effortlessly under heavy traffic.
+          Protecting digital assets and maintaining flawless system integrity through automated quality assurance, penetration testing, and continuous security compliance.
         </p>
       </motion.div>
 
@@ -177,7 +178,10 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
               >
                 {item.title}
               </h3>
-              <p className="text-xs sm:text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+              <p
+                className="text-xs sm:text-sm leading-relaxed"
+                style={{ color: "var(--muted)" }}
+              >
                 {item.description}
               </p>
             </motion.div>
@@ -212,7 +216,10 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
                   className="shrink-0 mt-0.5"
                   style={{ color: "var(--accent)" }}
                 />
-                <span className="text-sm font-medium leading-normal" style={{ color: "var(--ink)" }}>
+                <span
+                  className="text-sm font-medium leading-normal"
+                  style={{ color: "var(--ink)" }}
+                >
                   {item}
                 </span>
               </li>
@@ -266,8 +273,11 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
           borderColor: "var(--line)",
         }}
       >
-        <h2 className="bp-display font-bold text-2xl mb-8" style={{ color: "var(--ink)" }}>
-          Development Workflow
+        <h2
+          className="bp-display font-bold text-2xl mb-8"
+          style={{ color: "var(--ink)" }}
+        >
+          Assurance Workflow
         </h2>
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -286,7 +296,10 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
                 >
                   {step.title}
                 </h3>
-                <p className="text-xs sm:text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+                <p
+                  className="text-xs sm:text-sm leading-relaxed"
+                  style={{ color: "var(--muted)" }}
+                >
                   {step.description}
                 </p>
               </div>

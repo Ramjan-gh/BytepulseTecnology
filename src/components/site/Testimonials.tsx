@@ -1,26 +1,23 @@
-import React, { useRef, useState } from "react";
-import { motion, AnimatePresence, useScroll, useSpring, useTransform, type Variants } from "framer-motion";
+import React, { useState } from "react";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { Quote, ChevronLeft, ChevronRight, MessageSquare, Star } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { TESTIMONIALS } from "./data";
 
 const slideVariants: Variants = {
   enter: (dir: number) => ({
-    x: dir > 0 ? 40 : -40,
+    x: dir > 0 ? 24 : -24,
     opacity: 0,
-    scale: 0.98,
   }),
   center: {
     x: 0,
     opacity: 1,
-    scale: 1,
-    transition: { duration: 0.35, ease: "easeOut" },
+    transition: { duration: 0.25, ease: "easeOut" },
   },
   exit: (dir: number) => ({
-    x: dir > 0 ? -40 : 40,
+    x: dir > 0 ? -24 : 24,
     opacity: 0,
-    scale: 0.98,
-    transition: { duration: 0.25, ease: "easeIn" },
+    transition: { duration: 0.2, ease: "easeIn" },
   }),
 };
 
@@ -29,18 +26,6 @@ const SWIPE_THRESHOLD = 50;
 export const Testimonials: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState(1);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
-
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 20 });
-
-  const glowScale = useTransform(smoothProgress, [0, 0.5, 1], [0.8, 1.25, 0.8]);
-  const cardY = useTransform(smoothProgress, [0, 0.5, 1], [40, 0, -40]);
-  const cardScale = useTransform(smoothProgress, [0, 0.5, 1], [0.96, 1, 0.96]);
 
   const handleNext = () => {
     setDirection(1);
@@ -56,26 +41,20 @@ export const Testimonials: React.FC = () => {
 
   return (
     <section
-      ref={containerRef}
       id="testimonials"
-      className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-20 md:py-32 overflow-hidden"
+      className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-24 md:py-36 overflow-hidden"
     >
-      {/* Centered Background Glow */}
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] rounded-full -z-10 opacity-15 blur-3xl pointer-events-none"
-        style={{
-          background: "var(--accent)",
-          scale: glowScale,
-        }}
-      />
-
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-6">
         <div>
           <Reveal>
             <div
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bp-mono text-[11px] font-semibold uppercase tracking-wider mb-4"
-              style={{ background: "var(--accent-soft)", color: "var(--accent)" }}
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bp-mono text-[11px] font-semibold uppercase tracking-wider mb-4 border"
+              style={{
+                background: "var(--accent-soft)",
+                color: "var(--accent)",
+                borderColor: "rgba(6, 182, 212, 0.2)",
+              }}
             >
               <MessageSquare size={12} />
               <span>Client Feedback</span>
@@ -87,29 +66,34 @@ export const Testimonials: React.FC = () => {
               className="bp-display font-bold text-3xl sm:text-4xl md:text-5xl max-w-xl tracking-tight"
               style={{ color: "var(--ink)" }}
             >
-              Trusted by founders <span className="opacity-60 font-normal">& product leaders.</span>
+              Trusted by founders{" "}
+              <span className="opacity-60 font-normal block sm:inline">
+                & product leaders.
+              </span>
             </h2>
           </Reveal>
         </div>
 
         <Reveal delay={160}>
-          <p className="bp-mono text-xs sm:text-sm max-w-xs leading-relaxed" style={{ color: "var(--muted)" }}>
+          <p
+            className="bp-mono text-xs sm:text-sm max-w-xs leading-relaxed"
+            style={{ color: "var(--muted)" }}
+          >
             What teams say about our engineering velocity and code quality.
           </p>
         </Reveal>
       </div>
 
-      {/* Main Card with Scroll Parallax */}
+      {/* Main Card */}
       <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.6 }}
-        style={{ y: cardY, scale: cardScale }}
-        className="max-w-4xl mx-auto relative"
+        transition={{ duration: 0.4 }}
+        className="max-w-4xl mx-auto"
       >
         <div
-          className="rounded-3xl p-6 sm:p-10 md:p-12 backdrop-blur-xl border relative overflow-hidden transition-all duration-300 select-none cursor-grab active:cursor-grabbing"
+          className="rounded-3xl p-6 sm:p-10 md:p-12 border relative overflow-hidden transition-all duration-300 select-none cursor-grab active:cursor-grabbing hover:shadow-xl"
           style={{
             background: "var(--surface)",
             borderColor: "var(--line)",
@@ -127,7 +111,7 @@ export const Testimonials: React.FC = () => {
             <Quote size={32} className="opacity-20" style={{ color: "var(--accent)" }} />
           </div>
 
-          {/* Dynamic Quote Area with Drag/Swipe support */}
+          {/* Dynamic Quote Area */}
           <div className="min-h-[160px] sm:min-h-[140px] flex items-center mb-8 relative touch-pan-y">
             <AnimatePresence custom={direction} mode="wait">
               <motion.p
@@ -163,17 +147,20 @@ export const Testimonials: React.FC = () => {
             {/* Author Details */}
             <div className="flex items-center gap-3">
               <div
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-bold text-sm sm:text-base bp-mono shrink-0"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-bold text-sm sm:text-base bp-mono shrink-0 border"
                 style={{
                   background: "var(--accent-soft)",
                   color: "var(--accent)",
-                  border: "1px solid var(--accent-border)",
+                  borderColor: "rgba(6, 182, 212, 0.3)",
                 }}
               >
                 {current.name.charAt(0)}
               </div>
               <div>
-                <div className="font-bold text-sm sm:text-base tracking-tight" style={{ color: "var(--ink)" }}>
+                <div
+                  className="font-bold text-sm sm:text-base tracking-tight"
+                  style={{ color: "var(--ink)" }}
+                >
                   {current.name}
                 </div>
                 <div className="bp-mono text-xs" style={{ color: "var(--muted)" }}>
@@ -207,7 +194,7 @@ export const Testimonials: React.FC = () => {
               <div className="flex items-center gap-1.5 ml-2">
                 <button
                   onClick={handlePrev}
-                  className="p-2 sm:p-2.5 rounded-xl border transition-all duration-200 active:scale-95 cursor-pointer"
+                  className="p-2 sm:p-2.5 rounded-xl border transition-all duration-200 active:scale-95 cursor-pointer hover:border-[var(--accent)]"
                   style={{
                     borderColor: "var(--line)",
                     background: "var(--surface-2)",
@@ -220,7 +207,7 @@ export const Testimonials: React.FC = () => {
 
                 <button
                   onClick={handleNext}
-                  className="p-2 sm:p-2.5 rounded-xl border transition-all duration-200 active:scale-95 cursor-pointer"
+                  className="p-2 sm:p-2.5 rounded-xl border transition-all duration-200 active:scale-95 cursor-pointer hover:border-[var(--accent)]"
                   style={{
                     borderColor: "var(--line)",
                     background: "var(--surface-2)",
