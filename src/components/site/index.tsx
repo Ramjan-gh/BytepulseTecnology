@@ -12,6 +12,7 @@ import { Testimonials } from "./Testimonials";
 import { CTA } from "./CTA";
 import { Contact } from "./Contact";
 import { Footer } from "./Footer";
+import { Team } from "./Team";
 
 /**
  * BytePulse Technology — marketing site.
@@ -38,6 +39,7 @@ export default function BytePulseSite() {
       <TechMarquee />
       <Services />
       <Work />
+      <Team />
       <Process />
       <AboutStats />
       <Testimonials />
