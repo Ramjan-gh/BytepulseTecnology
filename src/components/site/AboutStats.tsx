@@ -1,7 +1,6 @@
-import React, { useRef } from "react";
-import { motion, useScroll, useSpring, useTransform } from "framer-motion";
-import { CheckCircle2, TrendingUp, Cpu, ShieldCheck } from "lucide-react";
-import { Reveal } from "./Reveal";
+import React from "react";
+import { motion } from "framer-motion";
+import { CheckCircle2, TrendingUp, Cpu } from "lucide-react";
 import { STATS } from "./data";
 import { useReveal, useCountUp } from "./hooks";
 
@@ -16,7 +15,7 @@ const StatCard: React.FC<{ stat: (typeof STATS)[number]; index: number }> = ({ s
       ref={ref}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: false, amount: 0.2 }} // Re-triggers animation on scroll up and down
+      viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.5, delay: index * 0.08 }}
       className="group relative rounded-2xl p-5 sm:p-6 backdrop-blur-xl border transition-all duration-300 hover:-translate-y-1"
       style={{
@@ -57,30 +56,19 @@ const StatCard: React.FC<{ stat: (typeof STATS)[number]; index: number }> = ({ s
 };
 
 export const AboutStats: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Track scroll position for central atmospheric glow
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
-
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 20 });
-  const glowScale = useTransform(smoothProgress, [0, 0.5, 1], [0.8, 1.25, 0.8]);
-
   return (
     <section
-      ref={containerRef}
       id="about"
       className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-20 md:py-32 overflow-hidden"
     >
-      {/* PERFECTLY CENTERED BACKGROUND GLOW */}
+      {/* Centered Background Glow — static, no per-frame scroll tracking */}
       <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] rounded-full -z-10 opacity-15 blur-3xl pointer-events-none"
-        style={{
-          background: "var(--accent)",
-          scale: glowScale,
-        }}
+        style={{ background: "var(--accent)" }}
+        initial={{ scale: 0.8 }}
+        whileInView={{ scale: 1.1 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 1.2, ease: "easeOut" }}
       />
 
       {/* Metrics Grid */}
@@ -90,11 +78,11 @@ export const AboutStats: React.FC = () => {
         ))}
       </div>
 
-      {/* Modernized About Spotlight Banner */}
+      {/* About Spotlight Banner */}
       <motion.div
         initial={{ opacity: 0, scale: 0.97 }}
         whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: false, amount: 0.2 }} // Continuous bi-directional scroll animation
+        viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
         <div

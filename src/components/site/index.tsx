@@ -1,18 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, Suspense, lazy } from "react";
 import "./styles.css";
 
 import { Nav } from "./Nav";
 import { Hero } from "./Hero";
-import { TechMarquee } from "./TechMarquee";
-import { Services } from "./Services";
-import { Work } from "./Work";
-import { Process } from "./Process";
-import { AboutStats } from "./AboutStats";
-import { Testimonials } from "./Testimonials";
-import { CTA } from "./CTA";
-import { Contact } from "./Contact";
-import { Footer } from "./Footer";
-import { Team } from "./Team";
+
+// Below-the-fold sections — split into separate chunks, loaded after first paint
+const TechMarquee = lazy(() => import("./TechMarquee").then(m => ({ default: m.TechMarquee })));
+const Services = lazy(() => import("./Services").then(m => ({ default: m.Services })));
+const Work = lazy(() => import("./Work").then(m => ({ default: m.Work })));
+const Team = lazy(() => import("./Team").then(m => ({ default: m.Team })));
+const Process = lazy(() => import("./Process").then(m => ({ default: m.Process })));
+const AboutStats = lazy(() => import("./AboutStats").then(m => ({ default: m.AboutStats })));
+const Testimonials = lazy(() => import("./Testimonials").then(m => ({ default: m.Testimonials })));
+const CTA = lazy(() => import("./CTA").then(m => ({ default: m.CTA })));
+const Contact = lazy(() => import("./Contact").then(m => ({ default: m.Contact })));
+const Footer = lazy(() => import("./Footer").then(m => ({ default: m.Footer })));
 
 /**
  * BytePulse Technology — marketing site.
@@ -36,16 +38,18 @@ export default function BytePulseSite() {
     <div className={`bp-root ${theme === "light" ? "light" : ""}`}>
       <Nav theme={theme} onToggleTheme={toggleTheme} />
       <Hero />
-      <TechMarquee />
-      <Services />
-      <Work />
-      <Team />
-      <Process />
-      <AboutStats />
-      <Testimonials />
-      <CTA />
-      <Contact />
-      <Footer />
+      <Suspense fallback={null}>
+        <TechMarquee />
+        <Services />
+        <Work />
+        <Team />
+        <Process />
+        <AboutStats />
+        <Testimonials />
+        <CTA />
+        <Contact />
+        <Footer />
+      </Suspense>
     </div>
   );
 }

@@ -7,16 +7,13 @@ import { PROCESS } from "./data";
 export const Process: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Track progress as user scrolls through the process list
+  // Track progress as user scrolls through the process list (drives the real timeline fill — kept)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start 70%", "end 50%"],
   });
 
-  // Smooth scroll progress for filling the timeline line
   const scaleY = useSpring(scrollYProgress, { stiffness: 100, damping: 25 });
-
-  // Centered background glow tracking progress
   const glowScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1.25, 0.8]);
 
   return (
@@ -26,7 +23,7 @@ export const Process: React.FC = () => {
       className="relative z-10 overflow-hidden"
       style={{ background: "var(--bg-alt)" }}
     >
-      {/* Perfectly Centered Background Glow */}
+      {/* Background Glow — reuses the existing scroll progress, no extra tracker */}
       <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] rounded-full -z-10 opacity-15 blur-3xl pointer-events-none"
         style={{
@@ -86,12 +83,12 @@ export const Process: React.FC = () => {
 
           {/* Process Steps */}
           <div className="flex flex-col space-y-8 sm:space-y-12">
-            {PROCESS.map((step, i) => (
+            {PROCESS.map((step) => (
               <motion.div
                 key={step.step}
                 initial={{ opacity: 0, x: -20, scale: 0.96 }}
                 whileInView={{ opacity: 1, x: 0, scale: 1 }}
-                viewport={{ once: false, amount: 0.4 }} // Triggers bidirectionally on scroll up and down
+                viewport={{ once: true, amount: 0.4 }}
                 transition={{ duration: 0.5, delay: 0.05 }}
                 className="group relative flex gap-5 sm:gap-8 items-start"
               >

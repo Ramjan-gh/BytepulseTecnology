@@ -24,25 +24,23 @@ const slideVariants: Variants = {
   }),
 };
 
+const SWIPE_THRESHOLD = 50;
+
 export const Testimonials: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Scroll tracking across the whole section
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"],
   });
 
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 20 });
-  
-  // Ambient background glow scale
-  const glowScale = useTransform(smoothProgress, [0, 0.5, 1], [0.8, 1.25, 0.8]);
 
-  // Card Parallax & Vertical Lift
-  const cardY = useTransform(smoothProgress, [0, 0.5, 1], [50, 0, -50]);
-  const cardScale = useTransform(smoothProgress, [0, 0.5, 1], [0.94, 1, 0.94]);
+  const glowScale = useTransform(smoothProgress, [0, 0.5, 1], [0.8, 1.25, 0.8]);
+  const cardY = useTransform(smoothProgress, [0, 0.5, 1], [40, 0, -40]);
+  const cardScale = useTransform(smoothProgress, [0, 0.5, 1], [0.96, 1, 0.96]);
 
   const handleNext = () => {
     setDirection(1);
@@ -62,7 +60,7 @@ export const Testimonials: React.FC = () => {
       id="testimonials"
       className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-20 md:py-32 overflow-hidden"
     >
-      {/* PERFECTLY CENTERED BACKGROUND GLOW */}
+      {/* Centered Background Glow */}
       <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] rounded-full -z-10 opacity-15 blur-3xl pointer-events-none"
         style={{
@@ -101,17 +99,17 @@ export const Testimonials: React.FC = () => {
         </Reveal>
       </div>
 
-      {/* Main Spotlight Card with Scroll-Driven Parallax & Scale */}
+      {/* Main Card with Scroll Parallax */}
       <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.6 }}
         style={{ y: cardY, scale: cardScale }}
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, amount: 0.2 }} // Re-triggers on scroll up and down
-        transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
         className="max-w-4xl mx-auto relative"
       >
         <div
-          className="rounded-3xl p-6 sm:p-10 md:p-12 backdrop-blur-xl border relative overflow-hidden transition-all duration-300"
+          className="rounded-3xl p-6 sm:p-10 md:p-12 backdrop-blur-xl border relative overflow-hidden transition-all duration-300 select-none cursor-grab active:cursor-grabbing"
           style={{
             background: "var(--surface)",
             borderColor: "var(--line)",
@@ -129,8 +127,8 @@ export const Testimonials: React.FC = () => {
             <Quote size={32} className="opacity-20" style={{ color: "var(--accent)" }} />
           </div>
 
-          {/* Dynamic Quote Area */}
-          <div className="min-h-[160px] sm:min-h-[140px] flex items-center mb-8">
+          {/* Dynamic Quote Area with Drag/Swipe support */}
+          <div className="min-h-[160px] sm:min-h-[140px] flex items-center mb-8 relative touch-pan-y">
             <AnimatePresence custom={direction} mode="wait">
               <motion.p
                 key={activeIndex}
@@ -139,6 +137,16 @@ export const Testimonials: React.FC = () => {
                 initial="enter"
                 animate="center"
                 exit="exit"
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.2}
+                onDragEnd={(_, info) => {
+                  if (info.offset.x < -SWIPE_THRESHOLD) {
+                    handleNext();
+                  } else if (info.offset.x > SWIPE_THRESHOLD) {
+                    handlePrev();
+                  }
+                }}
                 className="bp-display font-medium text-lg sm:text-2xl md:text-3xl leading-snug sm:leading-normal"
                 style={{ color: "var(--ink)" }}
               >
@@ -147,7 +155,7 @@ export const Testimonials: React.FC = () => {
             </AnimatePresence>
           </div>
 
-          {/* Bottom Bar: Author Profile & Navigation Controls */}
+          {/* Bottom Bar: Author Profile & Controls */}
           <div
             className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-6 border-t"
             style={{ borderColor: "var(--line)" }}

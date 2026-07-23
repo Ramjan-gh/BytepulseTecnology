@@ -10,7 +10,6 @@ export const Hero: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // 1. Scroll Tracking & Smooth Spring
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"],
@@ -23,17 +22,22 @@ export const Hero: React.FC = () => {
 
   const textScale = useTransform(smoothProgress, [0, 0.6], [1, 0.95]);
 
-  // 2. High-DPI Mobile-Optimized Canvas Physics
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Respect reduced-motion users outright
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+
     let animationFrameId: number;
     let width = 0;
     let height = 0;
     let dpr = 1;
+    let isMobile = false;
+    let running = true; // paused when off-screen or tab hidden
 
     let particles: Array<{
       x: number;
@@ -47,7 +51,8 @@ export const Hero: React.FC = () => {
     const handleResize = () => {
       if (!canvas || !canvas.parentElement) return;
 
-      dpr = Math.min(window.devicePixelRatio || 1, 2); // Cap at 2x for mobile GPU efficiency
+      isMobile = window.innerWidth < 768;
+      dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1 : 2); // no 2x DPR cost on phones
       width = canvas.parentElement.clientWidth;
       height = canvas.parentElement.clientHeight || window.innerHeight;
 
@@ -55,21 +60,18 @@ export const Hero: React.FC = () => {
       canvas.height = height * dpr;
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      ctx.scale(dpr, dpr);
-
-      // Re-calculate particle density based on device class
-      const isMobile = width < 768;
       const particleCount = isMobile
-        ? Math.floor((width * height) / 22000)
+        ? Math.floor((width * height) / 32000)
         : Math.floor((width * height) / 10000);
 
-      const targetCount = Math.max(particleCount, isMobile ? 25 : 70);
+      const targetCount = Math.max(particleCount, isMobile ? 18 : 70);
 
       particles = Array.from({ length: targetCount }, () => ({
         x: Math.random() * width,
         y: Math.random() * height,
-        radius: Math.random() * (isMobile ? 1.8 : 2.8) + 1,
+        radius: Math.random() * (isMobile ? 1.6 : 2.8) + 1,
         vx: (Math.random() - 0.5) * 1.1,
         vy: (Math.random() - 0.5) * 1.1,
         hue: Math.random() * 60 + 180,
@@ -90,16 +92,35 @@ export const Hero: React.FC = () => {
 
     window.addEventListener("resize", handleResize);
 
+    // Pause entirely when the hero scrolls off-screen
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        running = entry.isIntersecting;
+      },
+      { threshold: 0 }
+    );
+    io.observe(canvas);
+
+    // Pause when tab is backgrounded
+    const handleVisibility = () => {
+      if (document.hidden) running = false;
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
     const render = () => {
+      animationFrameId = requestAnimationFrame(render);
+      if (!running) return;
+
       ctx.clearRect(0, 0, width, height);
 
-      const isMobile = width < 768;
       const currentHue = 180 + scrollProgressVal * 140;
-      
-      // Clamp velocity impact on mobile to prevent jittery leaps during fast swipes
       const velocityImpact = Math.min(Math.abs(scrollVelocityVal), isMobile ? 1.5 : 3);
 
-      particles.forEach((p, index) => {
+      // Connection lines are desktop-only — this was the O(n²) cost driving mobile FPS drops
+      const connectionDistance = isMobile ? 0 : 130;
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
         p.x += p.vx * (1 + velocityImpact * 1.5);
         p.y += p.vy * (1 + velocityImpact * 1.5) + scrollVelocityVal * (isMobile ? 2 : 4);
 
@@ -110,36 +131,43 @@ export const Hero: React.FC = () => {
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius * (1 + velocityImpact * 0.3), 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${currentHue + (index % 40)}, 85%, 60%, ${0.4 + scrollProgressVal * 0.3})`;
-        ctx.shadowColor = `hsla(${currentHue}, 90%, 50%, 0.8)`;
-        ctx.shadowBlur = isMobile ? 6 : 14;
+        ctx.fillStyle = `hsla(${currentHue + (i % 40)}, 85%, 60%, ${0.4 + scrollProgressVal * 0.3})`;
+
+        // No shadowBlur on mobile — the single most expensive canvas op we were paying for
+        if (!isMobile) {
+          ctx.shadowColor = `hsla(${currentHue}, 90%, 50%, 0.8)`;
+          ctx.shadowBlur = 14;
+        } else {
+          ctx.shadowBlur = 0;
+        }
         ctx.fill();
 
-        const connectionDistance = isMobile ? 80 : 130;
-        for (let j = index + 1; j < particles.length; j++) {
-          const p2 = particles[j];
-          const dx = p.x - p2.x;
-          const dy = p.y - p2.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+        if (connectionDistance > 0) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const p2 = particles[j];
+            const dx = p.x - p2.x;
+            const dy = p.y - p2.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist < connectionDistance) {
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `hsla(${currentHue}, 80%, 55%, ${0.25 - dist / connectionDistance})`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
+            if (dist < connectionDistance) {
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.strokeStyle = `hsla(${currentHue}, 80%, 55%, ${0.25 - dist / connectionDistance})`;
+              ctx.lineWidth = 1;
+              ctx.stroke();
+            }
           }
         }
-      });
-
-      animationFrameId = requestAnimationFrame(render);
+      }
     };
 
     render();
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      document.removeEventListener("visibilitychange", handleVisibility);
+      io.disconnect();
       cancelAnimationFrame(animationFrameId);
       unsubscribe();
     };
