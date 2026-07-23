@@ -15,6 +15,7 @@ interface CoFounder {
   stack: string[];
   github: string;
   linkedin: string;
+  portfolio?: string;
 }
 
 const FOUNDERS: CoFounder[] = [
@@ -33,9 +34,10 @@ const FOUNDERS: CoFounder[] = [
     stack: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
     github: "https://github.com",
     linkedin: "https://linkedin.com",
+    portfolio: "https://my-portfolio-ramjan.vercel.app/",
   },
   {
-    name: "Co-Founder Name",
+    name: "Rafiqul Islam Rana",
     role: "Co-Founder & Lead Backend Engineer",
     type: "backend",
     image: "/team/cofounder.png",
@@ -49,6 +51,7 @@ const FOUNDERS: CoFounder[] = [
     stack: ["Node.js", "Express", "PostgreSQL", "Prisma"],
     github: "https://github.com",
     linkedin: "https://linkedin.com",
+    portfolio: "https://my-portfolio-rafiqul.vercel.app/",
   },
 ];
 
@@ -309,7 +312,7 @@ export const Team: React.FC = () => {
                 </div>
 
                 <a
-                  href={f.github}
+                  href={f.portfolio}
                   target="_blank"
                   rel="noreferrer"
                   className="bp-mono text-xs font-semibold flex items-center gap-1.5 transition-colors group/link"

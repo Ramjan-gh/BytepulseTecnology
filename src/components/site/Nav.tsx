@@ -8,11 +8,39 @@ import { useScrolled, useLiveClock } from "./hooks";
 export const Nav: React.FC<{
   theme: "light" | "dark";
   onToggleTheme: () => void;
-}> = ({ theme, onToggleTheme }) => {
+  onNavigate?: (href: string) => void;
+}> = ({ theme, onToggleTheme, onNavigate }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const scrolled = useScrolled();
   const time = useLiveClock();
+
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
+    if (onNavigate) {
+      e.preventDefault();
+      onNavigate(href);
+      return;
+    }
+
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      const targetId = href.replace("#", "");
+      
+      if (targetId === "top" || targetId === "") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        const element = document.getElementById(targetId);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        } else {
+          window.location.hash = href;
+        }
+      }
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full transition-all duration-500 py-3 sm:py-4">
@@ -33,7 +61,11 @@ export const Nav: React.FC<{
           }}
         >
           {/* Brand Logo */}
-          <a href="#top" className="flex items-center gap-3 group relative z-10">
+          <a
+            href="#top"
+            onClick={(e) => handleNavClick(e, "#top")}
+            className="flex items-center gap-3 group relative z-10"
+          >
             <div className="transition-transform duration-300 group-hover:scale-110">
               <PulseMark size={32} />
             </div>
@@ -51,6 +83,7 @@ export const Nav: React.FC<{
               <a
                 key={l.href}
                 href={l.href}
+                onClick={(e) => handleNavClick(e, l.href)}
                 onMouseEnter={() => setHoveredLink(l.href)}
                 onMouseLeave={() => setHoveredLink(null)}
                 className="relative px-4 py-2 text-xs font-medium uppercase tracking-wider bp-mono transition-colors duration-200"
@@ -127,6 +160,7 @@ export const Nav: React.FC<{
             {/* CTA Button */}
             <a
               href="#contact"
+              onClick={(e) => handleNavClick(e, "#contact")}
               className="bp-btn-primary px-4 py-2 rounded-xl text-xs font-semibold bp-mono uppercase tracking-wider flex items-center gap-1.5 shadow-lg active:scale-95 transition-transform"
             >
               <span>Start Project</span>
@@ -139,7 +173,11 @@ export const Nav: React.FC<{
             <button
               onClick={onToggleTheme}
               className="w-9 h-9 rounded-xl flex items-center justify-center border"
-              style={{ borderColor: "var(--line)", background: "var(--surface-2)", color: "var(--ink)" }}
+              style={{
+                borderColor: "var(--line)",
+                background: "var(--surface-2)",
+                color: "var(--ink)",
+              }}
               aria-label="Toggle light/dark mode"
             >
               {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
@@ -148,7 +186,11 @@ export const Nav: React.FC<{
               onClick={() => setMenuOpen((v) => !v)}
               aria-label="Toggle menu"
               className="p-2 rounded-xl border"
-              style={{ borderColor: "var(--line)", color: "var(--ink)", background: "var(--surface-2)" }}
+              style={{
+                borderColor: "var(--line)",
+                color: "var(--ink)",
+                background: "var(--surface-2)",
+              }}
             >
               {menuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -177,17 +219,30 @@ export const Nav: React.FC<{
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={(e) => {
+                      setMenuOpen(false);
+                      handleNavClick(e, l.href);
+                    }}
                     className="px-3.5 py-2.5 rounded-xl bp-mono text-xs uppercase tracking-wider font-semibold flex items-center justify-between transition-colors"
-                    style={{ color: "var(--ink)", background: "var(--surface-2)" }}
+                    style={{
+                      color: "var(--ink)",
+                      background: "var(--surface-2)",
+                    }}
                   >
                     <span>{l.label}</span>
-                    <ArrowUpRight size={14} className="opacity-60" style={{ color: "var(--accent)" }} />
+                    <ArrowUpRight
+                      size={14}
+                      className="opacity-60"
+                      style={{ color: "var(--accent)" }}
+                    />
                   </motion.a>
                 ))}
               </div>
 
-              <div className="pt-2 border-t flex flex-col gap-3" style={{ borderColor: "var(--line)" }}>
+              <div
+                className="pt-2 border-t flex flex-col gap-3"
+                style={{ borderColor: "var(--line)" }}
+              >
                 <div
                   className="bp-mono flex items-center justify-between text-xs px-3 py-2 rounded-xl"
                   style={{
@@ -197,7 +252,10 @@ export const Nav: React.FC<{
                   }}
                 >
                   <span className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "var(--accent)" }} />
+                    <span
+                      className="w-2 h-2 rounded-full animate-pulse"
+                      style={{ background: "var(--accent)" }}
+                    />
                     DHAKA HQ
                   </span>
                   <span className="font-bold">{time}</span>
@@ -206,7 +264,10 @@ export const Nav: React.FC<{
                 <a
                   href="#contact"
                   className="bp-btn-primary px-5 py-3 rounded-xl text-xs font-semibold bp-mono uppercase tracking-wider text-center flex items-center justify-center gap-2"
-                  onClick={() => setMenuOpen(false)}
+                  onClick={(e) => {
+                    setMenuOpen(false);
+                    handleNavClick(e, "#contact");
+                  }}
                 >
                   <span>Start a project</span>
                   <ArrowUpRight size={14} />

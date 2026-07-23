@@ -40,8 +40,16 @@ export const Contact: React.FC = () => {
 
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 20 });
 
+  // Parallax + fade-in are both derived from the same scroll source now,
+  // instead of running a separate whileInView/IntersectionObserver alongside
+  // the useScroll listener. One source of truth, one set of per-frame updates.
   const cardY = useTransform(smoothProgress, [0, 0.5, 1], [30, 0, -30]);
   const cardScale = useTransform(smoothProgress, [0, 0.5, 1], [0.96, 1, 0.96]);
+  const cardOpacity = useTransform(smoothProgress, [0, 0.15], [0, 1]);
+
+  // Glow scale still tracks scroll, but no longer paired with a blur filter
+  // (see background style below) — scaling a gradient is cheap, scaling a
+  // blurred element is not.
   const glowScale = useTransform(smoothProgress, [0, 0.5, 1], [0.8, 1.25, 0.8]);
 
   const handleChange = (
@@ -76,11 +84,16 @@ export const Contact: React.FC = () => {
       id="contact"
       className="relative z-10 max-w-6xl mx-auto px-6 pt-12 md:pt-16 pb-24 md:pb-32 overflow-hidden"
     >
-      {/* Background Accent Glow */}
+      {/* Background Accent Glow — replaced blur-3xl with a radial gradient.
+          This element's scale is bound to live scroll progress, updating
+          every frame for as long as the section is in/near the viewport.
+          Combining a per-frame transform with a blur filter was the most
+          expensive thing in this file; a gradient scales for free. */}
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] rounded-full -z-10 opacity-15 blur-3xl pointer-events-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] rounded-full -z-10 pointer-events-none"
         style={{
-          background: "var(--accent)",
+          background: "radial-gradient(circle, var(--accent) 0%, transparent 70%)",
+          opacity: 0.15,
           scale: glowScale,
         }}
       />
@@ -129,15 +142,16 @@ export const Contact: React.FC = () => {
           </div>
         </Reveal>
 
-        {/* Right Column: Parallax Form Card */}
+        {/* Right Column: Parallax Form Card
+            Removed the separate initial/whileInView opacity animation —
+            opacity is now driven by cardOpacity above, from the same
+            useScroll/useSpring source as y and scale. That removes a
+            redundant IntersectionObserver running alongside useScroll. */}
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
           style={{
             y: cardY,
             scale: cardScale,
+            opacity: cardOpacity,
           }}
         >
           {status === "sent" ? (

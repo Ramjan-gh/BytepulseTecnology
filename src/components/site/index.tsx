@@ -4,7 +4,6 @@ import "./styles.css";
 import { Nav } from "./Nav";
 import { Hero } from "./Hero";
 
-// Below-the-fold sections — split into separate chunks, loaded after first paint
 const TechMarquee = lazy(() => import("./TechMarquee").then(m => ({ default: m.TechMarquee })));
 const Services = lazy(() => import("./Services").then(m => ({ default: m.Services })));
 const Work = lazy(() => import("./Work").then(m => ({ default: m.Work })));
@@ -15,41 +14,67 @@ const Testimonials = lazy(() => import("./Testimonials").then(m => ({ default: m
 const CTA = lazy(() => import("./CTA").then(m => ({ default: m.CTA })));
 const Contact = lazy(() => import("./Contact").then(m => ({ default: m.Contact })));
 const Footer = lazy(() => import("./Footer").then(m => ({ default: m.Footer })));
+const AllWorks = lazy(() => import("./AllWorks").then(m => ({ default: m.AllWorks })));
 
-/**
- * BytePulse Technology — marketing site.
- *
- * Design direction: a light, spacious "studio-as-status-dashboard" concept —
- * fitting, since monitoring/uptime dashboards are literally part of what this
- * studio builds (see Signalboard in Work). The signature element is a live,
- * continuously animated heartbeat/pulse trace, reused in the hero's status
- * console and echoed through blinking status dots, a real ticking clock, an
- * auto-rotating activity ticker, and an auto-rotating testimonial — so the
- * page always has something genuinely happening, not just decoration.
- *
- * Split into one small, focused component per section (see the sibling
- * files in this folder) instead of a single monolithic page.
- */
 export default function BytePulseSite() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
+  const [page, setPage] = useState<"home" | "allworks">("home");
+
   const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
+
+  const goToAllWorks = () => {
+    setPage("allworks");
+    window.scrollTo(0, 0);
+  };
+  const goHome = () => {
+    setPage("home");
+    window.scrollTo(0, 0);
+  };
+
+  // Nav links use "#services", "#work", "#contact", etc.
+  // Those sections only exist on the home page, so if we're on AllWorks,
+  // switch home first, then scroll once the sections have mounted.
+  const goToSection = (hash: string) => {
+    const scrollToHash = () => {
+      const el = document.querySelector(hash);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    };
+
+    if (page !== "home") {
+      setPage("home");
+      requestAnimationFrame(() => {
+        setTimeout(scrollToHash, 50);
+      });
+    } else {
+      scrollToHash();
+    }
+  };
 
   return (
     <div className={`bp-root ${theme === "light" ? "light" : ""}`}>
-      <Nav theme={theme} onToggleTheme={toggleTheme} />
-      <Hero />
-      <Suspense fallback={null}>
-        <TechMarquee />
-        <Services />
-        <Work />
-        <Team />
-        <Process />
-        <AboutStats />
-        <Testimonials />
-        <CTA />
-        <Contact />
-        <Footer />
-      </Suspense>
+      <Nav theme={theme} onToggleTheme={toggleTheme} onNavigate={goToSection} />
+
+      {page === "allworks" ? (
+        <Suspense fallback={null}>
+          <AllWorks onBack={goHome} />
+        </Suspense>
+      ) : (
+        <>
+          <Hero />
+          <Suspense fallback={null}>
+            <TechMarquee />
+            <Services />
+            <Work onSeeAllWorks={goToAllWorks} />
+            <Team />
+            <Process />
+            <AboutStats />
+            <Testimonials />
+            <CTA />
+            <Contact />
+            <Footer />
+          </Suspense>
+        </>
+      )}
     </div>
   );
 }

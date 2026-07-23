@@ -5,9 +5,52 @@ import {
   Cloud,
   ShieldCheck,
   Wrench,
+  type LucideIcon,
 } from "lucide-react";
 
-export const NAV_LINKS = [
+export interface NavLink {
+  label: string;
+  href: string;
+}
+
+export interface Service {
+  icon: LucideIcon;
+  title: string;
+  desc: string;
+}
+
+export interface Project {
+  id?: string;
+  name: string;
+  category: string;
+  desc: string;
+  tags: string[];
+  link?: string;
+  url?: string;
+  image?: string;
+  featured?: boolean;
+}
+
+export interface ProcessStep {
+  step: string;
+  title: string;
+  desc: string;
+}
+
+export interface Stat {
+  value: number;
+  suffix: string;
+  label: string;
+  spark: number[];
+}
+
+export interface Testimonial {
+  quote: string;
+  name: string;
+  role: string;
+}
+
+export const NAV_LINKS: NavLink[] = [
   { label: "Services", href: "#services" },
   { label: "Work", href: "#work" },
   { label: "Process", href: "#process" },
@@ -15,7 +58,7 @@ export const NAV_LINKS = [
   { label: "Contact", href: "#contact" },
 ];
 
-export const SERVICES = [
+export const SERVICES: Service[] = [
   {
     icon: LayoutGrid,
     title: "Web Applications",
@@ -48,34 +91,60 @@ export const SERVICES = [
   },
 ];
 
-export const PROJECTS = [
+export const PROJECTS: Project[] = [
   {
     name: "StormyMart",
     category: "FinTech · Web App",
     desc: "A dynamic online store built for a fast, enjoyable shopping experience — curated product lines, quick checkout, and a storefront that stays fast under real traffic.",
     tags: ["React", "TypeScript", "PostgreSQL"],
+    link: "https://stormymart.com",
+    image: "/images/projects/stormymart.png",
   },
   {
     name: "SplitShare",
     category: "E-commerce",
     desc: "A headless storefront for a home-goods retailer, with sub-second page loads and a custom inventory dashboard.",
     tags: ["Next.js", "Stripe", "Sanity"],
+    link: "https://splitshare.com",
+    image: "/images/projects/splitshare.png",
   },
   {
     name: "Invoice-Maker",
     category: "SaaS · Mobile",
     desc: "A go-to invoicing app for freelancers and small businesses — ad-free, free for life, and built for people who'd rather bill clients than fight software.",
     tags: ["React Native", "Node.js", "Redis"],
+    link: "https://invoice-maker.com",
+    image: "/images/projects/invoice-maker.png",
   },
   {
     name: "Signalboard",
     category: "Internal Tooling",
     desc: "An analytics and alerting dashboard that gives an operations team a live pulse on every system they run.",
     tags: ["TypeScript", "AWS", "Docker"],
+    link: "https://signalboard.com",
+    image: "/images/projects/signalboard.png",
+  },
+  // NEW DEMO PROJECT 1
+  {
+    name: "AuraHealth",
+    category: "Healthcare · AI",
+    desc: "An AI-powered patient triage and scheduling platform that connects clinic EMRs with real-time patient queue management.",
+    tags: ["Next.js", "Python", "FastAPI", "Tailwind CSS"],
+    link: "https://aurahealth-demo.com",
+    image: "/images/projects/aurahealth.png",
+  },
+  // NEW DEMO PROJECT 2
+  {
+    name: "VelocePay",
+    category: "FinTech · API",
+    desc: "A unified cross-border payment gateway API handling instant multi-currency payouts with automated fraud verification.",
+    tags: ["TypeScript", "Node.js", "Prisma", "PostgreSQL"],
+    link: "https://velocepay-demo.com",
+    image: "/images/projects/velocepay.png",
   },
 ];
 
-export const PROCESS = [
+export const PROCESS: ProcessStep[] = [
   {
     step: "01",
     title: "Discover",
@@ -103,14 +172,14 @@ export const PROCESS = [
   },
 ];
 
-export const STATS = [
+export const STATS: Stat[] = [
   { value: 40, suffix: "+", label: "Projects delivered", spark: [3, 5, 4, 7, 6, 8, 9] },
   { value: 18, suffix: "", label: "Active clients", spark: [2, 2, 3, 3, 4, 4, 5] },
   { value: 99.9, suffix: "%", label: "Avg. uptime shipped", spark: [8, 9, 9, 8, 9, 9, 9] },
   { value: 4.9, suffix: "/5", label: "Client rating", spark: [4, 5, 4, 5, 5, 5, 5] },
 ];
 
-export const TECH = [
+export const TECH: string[] = [
   "TypeScript",
   "React",
   "Next.js",
@@ -125,7 +194,7 @@ export const TECH = [
   "Kubernetes",
 ];
 
-export const TESTIMONIALS = [
+export const TESTIMONIALS: Testimonial[] = [
   {
     quote:
       "They shipped in six weeks what our last vendor couldn't finish in six months, and it hasn't gone down once.",
@@ -146,8 +215,7 @@ export const TESTIMONIALS = [
   },
 ];
 
-/** Rotating "activity log" lines — the studio's own status ticker. */
-export const STATUS_LINES = [
+export const STATUS_LINES: string[] = [
   "Signalboard v2 — deployed to production",
   "StormyMart checkout — 40% faster this sprint",
   "Weekly demo with SplitShare — complete",
