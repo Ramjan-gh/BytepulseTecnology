@@ -28,11 +28,11 @@ import { Footer } from "./Footer";
  * files in this folder) instead of a single monolithic page.
  */
 export default function BytePulseSite() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
   const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
 
   return (
-    <div className={`bp-root ${theme === "dark" ? "dark" : ""}`}>
+    <div className={`bp-root ${theme === "light" ? "light" : ""}`}>
       <Nav theme={theme} onToggleTheme={toggleTheme} />
       <Hero />
       <TechMarquee />

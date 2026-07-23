@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Menu, X, Sun, Moon, Sparkles, ArrowUpRight } from "lucide-react";
+import { Menu, X, Sun, Moon, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { NAV_LINKS } from "./data";
 import { PulseMark } from "./icons";
@@ -35,7 +35,7 @@ export const Nav: React.FC<{
           {/* Brand Logo */}
           <a href="#top" className="flex items-center gap-3 group relative z-10">
             <div className="transition-transform duration-300 group-hover:scale-110">
-              <PulseMark size={28} />
+              <PulseMark size={32} />
             </div>
             <span className="bp-display font-semibold text-base sm:text-lg tracking-tight flex items-center gap-1">
               <span style={{ color: "var(--ink)" }}>BytePulse</span>
@@ -178,11 +178,11 @@ export const Nav: React.FC<{
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
                     onClick={() => setMenuOpen(false)}
-                    className="px-3 py-2 rounded-lg bp-mono text-sm uppercase tracking-wider font-medium flex items-center justify-between"
+                    className="px-3.5 py-2.5 rounded-xl bp-mono text-xs uppercase tracking-wider font-semibold flex items-center justify-between transition-colors"
                     style={{ color: "var(--ink)", background: "var(--surface-2)" }}
                   >
                     <span>{l.label}</span>
-                    <Sparkles size={14} style={{ color: "var(--accent)" }} />
+                    <ArrowUpRight size={14} className="opacity-60" style={{ color: "var(--accent)" }} />
                   </motion.a>
                 ))}
               </div>

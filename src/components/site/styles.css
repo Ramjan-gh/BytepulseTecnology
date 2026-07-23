@@ -1,28 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400..600;1,400..600&family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&display=swap');
 
 /* ============================ MODERN DESIGN TOKENS ============================= */
+
+/* 1. DEFAULT: PREMIUM DARK MODE (Illuminated Obsidian/Slate) */
 .bp-root {
-  /* Light Mode Palette: Clean, Scandinavian Minimalist */
-  --bg: #f8faf9;
-  --bg-alt: #f0f4f1;
-  --surface: #ffffff;
-  --surface-2: #f2f5f3;
-  --line: rgba(15, 23, 42, 0.08);
-  --line-strong: rgba(15, 23, 42, 0.16);
-  --ink: #0f172a;
-  --muted: #64748b;
+  /* Rich, Layered Canvas Backgrounds */
+  --bg: #0f172a;                     /* Warm Slate Base (Not Black) */
+  --bg-alt: #1e293b;                 /* Elevated Container Base */
+  --surface: rgba(30, 41, 59, 0.65); /* Glassmorphic Surface Layer */
+  --surface-2: rgba(51, 65, 85, 0.5);/* Interactive Card Hover Layer */
   
-  /* Vibrant Operational Accents */
-  --accent: #059669;            /* Crisp Emerald */
-  --accent-soft: rgba(5, 150, 105, 0.08);
-  --accent-border: rgba(5, 150, 105, 0.24);
+  /* Borders & Dividers */
+  --line: rgba(255, 255, 255, 0.1);  
+  --line-strong: rgba(255, 255, 255, 0.22);
   
-  --pulse: #f97316;             /* Signal Orange Heartbeat Trace */
-  --pulse-soft: rgba(249, 115, 22, 0.1);
+  /* Typography */
+  --ink: #f8fafc;                    /* Crisp White Primary Text */
+  --muted: #94a3b8;                  /* Readable Secondary Text */
   
-  --shadow: 0 1px 3px rgba(15, 23, 42, 0.03), 0 8px 24px -10px rgba(15, 23, 42, 0.08);
-  --shadow-lift: 0 12px 32px -8px rgba(15, 23, 42, 0.12), 0 4px 12px rgba(15, 23, 42, 0.04);
-  --btn-text: #ffffff;
+  /* Vibrant Electric Emerald Accents */
+  --accent: #10b981;
+  --accent-soft: rgba(16, 185, 129, 0.14);
+  --accent-border: rgba(16, 185, 129, 0.32);
+  
+  --pulse: #f97316;
+  --pulse-soft: rgba(249, 115, 22, 0.15);
+  
+  /* Glowing Volumetric Shadows */
+  --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
+  --shadow-lift: 0 20px 40px -12px rgba(0, 0, 0, 0.6), 0 0 30px rgba(16, 185, 129, 0.2);
+  --btn-text: #0f172a;
 
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: var(--bg);
@@ -31,29 +38,50 @@
   position: relative;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  color-scheme: dark;
+
+  /* Ambient Mesh Gradient Glows for Depth */
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(15, 23, 42, 0.8) 0px, transparent 100%);
+  background-attachment: fixed;
 }
 
-.bp-root.dark {
-  /* Dark Mode Palette: Deep Slate Studio (No Harsh Pure Black) */
-  --bg: #090d0b;
-  --bg-alt: #050806;
-  --surface: #111714;
-  --surface-2: #17201c;
-  --line: rgba(241, 245, 249, 0.08);
-  --line-strong: rgba(241, 245, 249, 0.18);
-  --ink: #f8fafc;
-  --muted: #94a3b8;
+/* 2. OPTIONAL: CRISP LIGHT MODE (Scandinavian Modern Porcelain) */
+.bp-root.light {
+  --bg: #f8fafc;                     /* Clean Slate-White Background */
+  --bg-alt: #f1f5f9;                 /* Soft Off-White Alt Background */
+  --surface: rgba(255, 255, 255, 0.85);/* Glassy White Surface */
+  --surface-2: #ffffff;              /* Crisp Elevated Card Base */
   
-  --accent: #10b981;
-  --accent-soft: rgba(16, 185, 129, 0.12);
-  --accent-border: rgba(16, 185, 129, 0.28);
+  /* Borders & Dividers */
+  --line: rgba(15, 23, 42, 0.08);
+  --line-strong: rgba(15, 23, 42, 0.2);
   
-  --pulse: #fb923c;
-  --pulse-soft: rgba(251, 146, 60, 0.14);
+  /* Typography */
+  --ink: #0f172a;                    /* Deep Slate Primary Text */
+  --muted: #475569;                  /* High Contrast Secondary Text */
   
-  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 16px 36px -12px rgba(0, 0, 0, 0.6);
-  --shadow-lift: 0 20px 40px -12px rgba(0, 0, 0, 0.8);
-  --btn-text: #04120a;
+  /* Vibrant Forest Emerald Accents */
+  --accent: #059669;
+  --accent-soft: rgba(5, 150, 105, 0.08);
+  --accent-border: rgba(5, 150, 105, 0.25);
+  
+  --pulse: #ea580c;
+  --pulse-soft: rgba(234, 88, 12, 0.1);
+  
+  /* Crisp Depth Shadows */
+  --shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 6px 16px -4px rgba(15, 23, 42, 0.06);
+  --shadow-lift: 0 16px 32px -8px rgba(15, 23, 42, 0.12), 0 0 20px rgba(5, 150, 105, 0.15);
+  --btn-text: #ffffff;
+  
+  color-scheme: light;
+
+  /* Subtle Warm Ambient Mesh Gradient */
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(5, 150, 105, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.05) 0px, transparent 50%);
 }
 
 .bp-root * { 
@@ -81,21 +109,22 @@
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* Modern Card Architecture */
+/* Glassmorphic Modern Card Architecture */
 .bp-card {
   background: var(--surface);
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
   border-radius: 1.25rem;
-  transition: box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
-              transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
-              border-color 0.25s ease;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .bp-card:hover {
   box-shadow: var(--shadow-lift);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   border-color: var(--line-strong);
+  background: var(--surface-2);
 }
 
 .bp-tag {
@@ -120,8 +149,8 @@
 
 .bp-btn-primary:hover { 
   transform: translateY(-1px); 
-  box-shadow: 0 8px 20px -4px var(--accent-border); 
-  opacity: 0.96;
+  box-shadow: 0 8px 24px -4px var(--accent-border); 
+  opacity: 0.95;
 }
 
 .bp-btn-primary:active {
@@ -132,9 +161,11 @@
   border: 1px solid var(--line);
   color: var(--ink);
   background: var(--surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   font-weight: 500;
   border-radius: 9999px;
-  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .bp-btn-ghost:hover { 
@@ -156,6 +187,8 @@
   border: 1px solid var(--line);
   color: var(--ink);
   border-radius: 0.75rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
