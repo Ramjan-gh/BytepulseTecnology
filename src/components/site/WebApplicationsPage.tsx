@@ -9,7 +9,6 @@ import {
   Globe,
   Zap,
   ShieldCheck,
-  Code2,
 } from "lucide-react";
 
 interface WebApplicationsPageProps {
@@ -87,17 +86,20 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
   return (
     <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-16 md:py-24">
       {/* Back Button */}
-      <button
-              onClick={onBack}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-12 cursor-pointer"
-              style={{
-                background: "var(--surface)",
-                borderColor: "var(--line)",
-              }}
-            >
-              <ArrowLeft size={15} />
-              Back to Services
-            </button>
+      <motion.button
+        onClick={onBack}
+        whileHover={{ x: -4 }}
+        whileTap={{ scale: 0.95 }}
+        className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-12 cursor-pointer transition-colors"
+        style={{
+          background: "var(--surface)",
+          borderColor: "var(--line)",
+          color: "var(--ink)",
+        }}
+      >
+        <ArrowLeft size={15} />
+        <span className="text-sm font-medium">Back to Services</span>
+      </motion.button>
 
       {/* Hero Header */}
       <motion.div
@@ -141,8 +143,9 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
           className="bp-mono text-base sm:text-lg max-w-3xl leading-relaxed"
           style={{ color: "var(--muted)" }}
         >
-          Building fast, responsive, and resilient web applications designed
-          to deliver seamless user experiences and scale effortlessly under heavy traffic.
+          Building fast, responsive, and resilient web applications designed to
+          deliver seamless user experiences and scale effortlessly under heavy
+          traffic.
         </p>
       </motion.div>
 
@@ -177,7 +180,10 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
               >
                 {item.title}
               </h3>
-              <p className="text-xs sm:text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+              <p
+                className="text-xs sm:text-sm leading-relaxed"
+                style={{ color: "var(--muted)" }}
+              >
                 {item.description}
               </p>
             </motion.div>
@@ -212,7 +218,10 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
                   className="shrink-0 mt-0.5"
                   style={{ color: "var(--accent)" }}
                 />
-                <span className="text-sm font-medium leading-normal" style={{ color: "var(--ink)" }}>
+                <span
+                  className="text-sm font-medium leading-normal"
+                  style={{ color: "var(--ink)" }}
+                >
                   {item}
                 </span>
               </li>
@@ -225,32 +234,34 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
-          className="rounded-3xl p-8 border"
+          className="rounded-3xl p-8 border flex flex-col justify-between"
           style={{
             background: "var(--surface)",
             borderColor: "var(--line)",
           }}
         >
-          <div
-            className="flex items-center gap-2 bp-mono text-xs uppercase font-bold tracking-wider mb-6"
-            style={{ color: "var(--accent)" }}
-          >
-            <Cpu size={14} /> Technologies
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {techStack.map((tech) => (
-              <span
-                key={tech}
-                className="bp-mono text-xs px-3.5 py-1.5 rounded-xl border font-medium"
-                style={{
-                  background: "var(--surface-2)",
-                  borderColor: "var(--line)",
-                  color: "var(--ink)",
-                }}
-              >
-                {tech}
-              </span>
-            ))}
+          <div>
+            <div
+              className="flex items-center gap-2 bp-mono text-xs uppercase font-bold tracking-wider mb-6"
+              style={{ color: "var(--accent)" }}
+            >
+              <Cpu size={14} /> Technologies
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {techStack.map((tech) => (
+                <span
+                  key={tech}
+                  className="bp-mono text-xs px-3.5 py-1.5 rounded-xl border font-medium transition-colors"
+                  style={{
+                    background: "var(--surface-2)",
+                    borderColor: "var(--line)",
+                    color: "var(--ink)",
+                  }}
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
           </div>
         </motion.div>
       </div>
@@ -266,7 +277,10 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
           borderColor: "var(--line)",
         }}
       >
-        <h2 className="bp-display font-bold text-2xl mb-8" style={{ color: "var(--ink)" }}>
+        <h2
+          className="bp-display font-bold text-2xl mb-8"
+          style={{ color: "var(--ink)" }}
+        >
           Development Workflow
         </h2>
 
@@ -275,7 +289,7 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
             <div key={step.step} className="flex flex-col justify-between">
               <div>
                 <span
-                  className="bp-mono text-xs font-bold opacity-40 block mb-2"
+                  className="bp-mono text-xs font-bold opacity-60 block mb-2"
                   style={{ color: "var(--accent)" }}
                 >
                   PHASE {step.step}
@@ -286,7 +300,10 @@ export const WebApplicationsPage: React.FC<WebApplicationsPageProps> = ({
                 >
                   {step.title}
                 </h3>
-                <p className="text-xs sm:text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+                <p
+                  className="text-xs sm:text-sm leading-relaxed"
+                  style={{ color: "var(--muted)" }}
+                >
                   {step.description}
                 </p>
               </div>

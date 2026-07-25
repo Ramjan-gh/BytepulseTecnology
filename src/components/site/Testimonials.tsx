@@ -1,41 +1,49 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence, type Variants } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Quote, ChevronLeft, ChevronRight, MessageSquare, Star } from "lucide-react";
-import { Reveal } from "./Reveal";
 import { TESTIMONIALS } from "./data";
 
-const slideVariants: Variants = {
-  enter: (dir: number) => ({
-    x: dir > 0 ? 24 : -24,
-    opacity: 0,
-  }),
-  center: {
-    x: 0,
-    opacity: 1,
-    transition: { duration: 0.25, ease: "easeOut" },
-  },
-  exit: (dir: number) => ({
-    x: dir > 0 ? -24 : 24,
-    opacity: 0,
-    transition: { duration: 0.2, ease: "easeIn" },
-  }),
-};
-
 const SWIPE_THRESHOLD = 50;
+const AUTOPLAY_INTERVAL = 3000; // 3 seconds (Faster transition)
 
 export const Testimonials: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [direction, setDirection] = useState(1);
+  const [isPaused, setIsPaused] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const resetTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+  };
 
   const handleNext = () => {
-    setDirection(1);
+    resetTimer();
     setActiveIndex((prev) => (prev + 1) % TESTIMONIALS.length);
   };
 
   const handlePrev = () => {
-    setDirection(-1);
+    resetTimer();
     setActiveIndex((prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
   };
+
+  const handleDotClick = (index: number) => {
+    resetTimer();
+    setActiveIndex(index);
+  };
+
+  // Setup Autoplay Timer
+  useEffect(() => {
+    if (!isPaused) {
+      timerRef.current = setInterval(() => {
+        setActiveIndex((prev) => (prev + 1) % TESTIMONIALS.length);
+      }, AUTOPLAY_INTERVAL);
+    }
+
+    return () => {
+      resetTimer();
+    };
+  }, [isPaused]);
 
   const current = TESTIMONIALS[activeIndex];
 
@@ -47,7 +55,12 @@ export const Testimonials: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-6">
         <div>
-          <Reveal>
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.3 }}
+          >
             <div
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full bp-mono text-[11px] font-semibold uppercase tracking-wider mb-4 border"
               style={{
@@ -59,9 +72,14 @@ export const Testimonials: React.FC = () => {
               <MessageSquare size={12} />
               <span>Client Feedback</span>
             </div>
-          </Reveal>
+          </motion.div>
 
-          <Reveal delay={80}>
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.3, delay: 0.05 }}
+          >
             <h2
               className="bp-display font-bold text-3xl sm:text-4xl md:text-5xl max-w-xl tracking-tight"
               style={{ color: "var(--ink)" }}
@@ -71,29 +89,36 @@ export const Testimonials: React.FC = () => {
                 & product leaders.
               </span>
             </h2>
-          </Reveal>
+          </motion.div>
         </div>
 
-        <Reveal delay={160}>
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+        >
           <p
             className="bp-mono text-xs sm:text-sm max-w-xs leading-relaxed"
             style={{ color: "var(--muted)" }}
           >
             What teams say about our engineering velocity and code quality.
           </p>
-        </Reveal>
+        </motion.div>
       </div>
 
       {/* Main Card */}
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.4 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.3 }}
         className="max-w-4xl mx-auto"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
       >
         <div
-          className="rounded-3xl p-6 sm:p-10 md:p-12 border relative overflow-hidden transition-all duration-300 select-none cursor-grab active:cursor-grabbing hover:shadow-xl"
+          className="rounded-3xl p-6 sm:p-10 md:p-12 border relative overflow-hidden transition-colors duration-200 select-none cursor-grab active:cursor-grabbing"
           style={{
             background: "var(--surface)",
             borderColor: "var(--line)",
@@ -113,18 +138,19 @@ export const Testimonials: React.FC = () => {
 
           {/* Dynamic Quote Area */}
           <div className="min-h-[160px] sm:min-h-[140px] flex items-center mb-8 relative touch-pan-y">
-            <AnimatePresence custom={direction} mode="wait">
+            <AnimatePresence mode="wait">
               <motion.p
                 key={activeIndex}
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
                 drag="x"
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.2}
+                onDragStart={() => setIsPaused(true)}
                 onDragEnd={(_, info) => {
+                  setIsPaused(false);
                   if (info.offset.x < -SWIPE_THRESHOLD) {
                     handleNext();
                   } else if (info.offset.x > SWIPE_THRESHOLD) {
@@ -176,11 +202,8 @@ export const Testimonials: React.FC = () => {
                 {TESTIMONIALS.map((_, idx) => (
                   <button
                     key={idx}
-                    onClick={() => {
-                      setDirection(idx > activeIndex ? 1 : -1);
-                      setActiveIndex(idx);
-                    }}
-                    className="h-2 rounded-full transition-all duration-300 cursor-pointer"
+                    onClick={() => handleDotClick(idx)}
+                    className="h-2 rounded-full transition-all duration-200 cursor-pointer"
                     style={{
                       width: idx === activeIndex ? 24 : 8,
                       background: idx === activeIndex ? "var(--accent)" : "var(--line)",
@@ -194,7 +217,7 @@ export const Testimonials: React.FC = () => {
               <div className="flex items-center gap-1.5 ml-2">
                 <button
                   onClick={handlePrev}
-                  className="p-2 sm:p-2.5 rounded-xl border transition-all duration-200 active:scale-95 cursor-pointer hover:border-[var(--accent)]"
+                  className="p-2 sm:p-2.5 rounded-xl border transition-colors duration-200 cursor-pointer hover:border-[var(--accent)]"
                   style={{
                     borderColor: "var(--line)",
                     background: "var(--surface-2)",
@@ -207,7 +230,7 @@ export const Testimonials: React.FC = () => {
 
                 <button
                   onClick={handleNext}
-                  className="p-2 sm:p-2.5 rounded-xl border transition-all duration-200 active:scale-95 cursor-pointer hover:border-[var(--accent)]"
+                  className="p-2 sm:p-2.5 rounded-xl border transition-colors duration-200 cursor-pointer hover:border-[var(--accent)]"
                   style={{
                     borderColor: "var(--line)",
                     background: "var(--surface-2)",

@@ -1,5 +1,4 @@
 import React from "react";
-import { motion } from "framer-motion";
 import { Code2, Server, ArrowUpRight, Users, Sparkles } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa6";
 import { Reveal } from "./Reveal";
@@ -103,25 +102,16 @@ export const Team: React.FC = () => {
         {FOUNDERS.map((f, i) => {
           const isFrontend = f.type === "frontend";
           const themeColor = isFrontend ? "var(--accent)" : "#a855f7";
-          const badgeBg = isFrontend ? "rgba(6, 182, 212, 0.15)" : "rgba(168, 85, 247, 0.15)";
-          const badgeBorder = isFrontend ? "rgba(6, 182, 212, 0.3)" : "rgba(168, 85, 247, 0.3)";
+          const badgeBg = isFrontend ? "rgba(6, 182, 212, 0.12)" : "rgba(168, 85, 247, 0.12)";
+          const badgeBorder = isFrontend ? "rgba(6, 182, 212, 0.25)" : "rgba(168, 85, 247, 0.25)";
 
           return (
-            <motion.div
-              key={f.name}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.4, delay: i * 0.08, ease: "easeOut" }}
-              className="group relative rounded-3xl border transition-colors duration-300 overflow-hidden flex flex-col justify-between h-full hover:shadow-2xl"
-              style={{ borderColor: "var(--line)" }}
-              aria-label={`Profile card for ${f.name}`}
-            >
+            <Reveal key={f.name} delay={i * 100}>
               <div
-                className="absolute inset-0 -z-10 transition-opacity duration-300 group-hover:opacity-90"
-                style={{ background: "var(--surface)" }}
-              />
-
+                className="group relative rounded-3xl border transition-all duration-300 overflow-hidden flex flex-col justify-between h-full sm:hover:shadow-2xl"
+                style={{ borderColor: "var(--line)", background: "var(--surface)" }}
+                aria-label={`Profile card for ${f.name}`}
+              >
               <div>
                 <div className="relative h-64 sm:h-72 w-full overflow-hidden bg-surface-2">
                   <img
@@ -129,11 +119,11 @@ export const Team: React.FC = () => {
                     alt={f.name}
                     loading="lazy"
                     decoding="async"
-                    className="w-full h-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
+                    className="w-full h-full object-cover object-top transition-transform duration-500 ease-out sm:group-hover:scale-105"
                   />
 
                   <div
-                    className="absolute inset-0 transition-opacity duration-300"
+                    className="absolute inset-0 transition-opacity duration-300 pointer-events-none"
                     style={{
                       background: `linear-gradient(to top, var(--surface) 0%, rgba(0,0,0,0.15) 60%, transparent 100%)`,
                     }}
@@ -141,11 +131,11 @@ export const Team: React.FC = () => {
 
                   <div className="absolute top-4 left-4 z-10">
                     <span
-                      className="bp-mono text-[11px] font-semibold uppercase px-3 py-1.5 rounded-full flex items-center gap-1.5 border shadow-sm"
+                      className="bp-mono text-[11px] font-semibold uppercase px-3 py-1.5 rounded-full flex items-center gap-1.5 border shadow-sm backdrop-blur-md"
                       style={{
                         background: badgeBg,
                         borderColor: badgeBorder,
-                        color: isFrontend ? "#0891b2" : "#c084fc",
+                        color: isFrontend ? "var(--accent)" : "#c084fc",
                       }}
                     >
                       {isFrontend ? <Code2 size={13} /> : <Server size={13} />}
@@ -154,12 +144,12 @@ export const Team: React.FC = () => {
                   </div>
 
                   <div
-                    className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-300 pointer-events-none"
+                    className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full blur-2xl opacity-0 sm:group-hover:opacity-30 transition-opacity duration-300 pointer-events-none"
                     style={{ background: themeColor }}
                   />
                 </div>
 
-                <div className="p-6 sm:p-8 pt-2">
+                <div className="p-6 sm:p-8 pt-4">
                   <div>
                     <h3
                       className="bp-display font-bold text-2xl sm:text-3xl tracking-tight"
@@ -167,7 +157,10 @@ export const Team: React.FC = () => {
                     >
                       {f.name}
                     </h3>
-                    <p className="bp-mono text-xs mt-1 font-semibold tracking-wide" style={{ color: themeColor }}>
+                    <p
+                      className="bp-mono text-xs mt-1 font-semibold tracking-wide"
+                      style={{ color: themeColor }}
+                    >
                       {f.role}
                     </p>
                   </div>
@@ -187,7 +180,10 @@ export const Team: React.FC = () => {
                     <ul className="text-xs space-y-2 font-medium" style={{ color: "var(--ink)" }}>
                       {f.specialties.map((spec) => (
                         <li key={spec} className="flex items-center gap-2.5">
-                          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: themeColor }} />
+                          <span
+                            className="w-1.5 h-1.5 rounded-full shrink-0"
+                            style={{ background: themeColor }}
+                          />
                           <span>{spec}</span>
                         </li>
                       ))}
@@ -228,10 +224,10 @@ export const Team: React.FC = () => {
                   <a
                     href={f.github}
                     target="_blank"
-                    rel="noreferrer"
-                    className="p-2.5 rounded-xl border transition-transform duration-200 hover:scale-105"
+                    rel="noopener noreferrer"
+                    className="p-2.5 rounded-xl border transition-transform duration-200 sm:hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
                     style={{ borderColor: "var(--line)", background: "var(--surface-2)", color: "var(--ink)" }}
-                    aria-label={`${f.name} GitHub`}
+                    aria-label={`${f.name}'s GitHub Profile`}
                   >
                     <FaGithub size={16} />
                   </a>
@@ -239,10 +235,10 @@ export const Team: React.FC = () => {
                   <a
                     href={f.linkedin}
                     target="_blank"
-                    rel="noreferrer"
-                    className="p-2.5 rounded-xl border transition-transform duration-200 hover:scale-105"
+                    rel="noopener noreferrer"
+                    className="p-2.5 rounded-xl border transition-transform duration-200 sm:hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
                     style={{ borderColor: "var(--line)", background: "var(--surface-2)", color: "var(--ink)" }}
-                    aria-label={`${f.name} LinkedIn`}
+                    aria-label={`${f.name}'s LinkedIn Profile`}
                   >
                     <FaLinkedin size={16} />
                   </a>
@@ -252,8 +248,8 @@ export const Team: React.FC = () => {
                   <a
                     href={f.portfolio}
                     target="_blank"
-                    rel="noreferrer"
-                    className="bp-mono text-xs font-semibold flex items-center gap-1.5 transition-colors group/link"
+                    rel="noopener noreferrer"
+                    className="bp-mono text-xs font-semibold flex items-center gap-1.5 transition-colors group/link focus-visible:outline-none"
                     style={{ color: "var(--muted)" }}
                   >
                     <span className="group-hover/link:text-[var(--ink)]">View Portfolio</span>
@@ -264,7 +260,8 @@ export const Team: React.FC = () => {
                   </a>
                 )}
               </div>
-            </motion.div>
+              </div>
+            </Reveal>
           );
         })}
       </div>

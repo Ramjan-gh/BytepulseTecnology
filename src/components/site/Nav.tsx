@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, Sun, Moon, ArrowUpRight } from "lucide-react";
+import { Menu, X, Sun, Moon, ArrowUpRight, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { NAV_LINKS } from "./data";
 import { PulseMark } from "./icons";
@@ -14,24 +14,43 @@ export const Nav: React.FC<{
   theme: "light" | "dark";
   onToggleTheme: () => void;
   onNavigate?: (href: string) => void;
-}> = ({ theme, onToggleTheme, onNavigate }) => {
+  showBackButton?: boolean; // Toggle if you're on a sub-page
+}> = ({ theme, onToggleTheme, onNavigate, showBackButton = false }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const scrolled = useScrolled();
   const time = useLiveClock();
 
-  // Prevent background scrolling when mobile menu is open
+  // Handle browser back/forward buttons smoothly
   useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    const handlePopState = (event: PopStateEvent) => {
+      const hash = window.location.hash;
+      if (hash) {
+        const element = document.querySelector(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+          return;
+        }
+      }
+      // If no hash, restore state or scroll to saved position
+      if (event.state && typeof event.state.scrollY === "number") {
+        window.scrollTo({ top: event.state.scrollY, behavior: "smooth" });
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [menuOpen]);
 
+  // Clean Navigation Handler
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string
@@ -46,12 +65,21 @@ export const Nav: React.FC<{
       e.preventDefault();
       const targetId = href.replace("#", "");
 
+      // Save current scroll position in history before moving
+      window.history.replaceState({ scrollY: window.scrollY }, "");
+
       if (targetId === "top" || targetId === "") {
         window.scrollTo({ top: 0, behavior: "smooth" });
+        window.history.pushState({ scrollY: 0 }, "", window.location.pathname);
       } else {
         const element = document.getElementById(targetId);
         if (element) {
           element.scrollIntoView({ behavior: "smooth" });
+          window.history.pushState(
+            { scrollY: element.getBoundingClientRect().top + window.scrollY },
+            "",
+            href
+          );
         } else {
           window.location.hash = href;
         }
@@ -59,9 +87,17 @@ export const Nav: React.FC<{
     }
   };
 
+  // Dedicated Back Button Handler (Remembers Previous Scroll Position)
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      window.history.back(); // Goes back to EXACT prior position & page
+    } else {
+      window.location.href = "/";
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full transition-all duration-300 py-2 sm:py-3 md:py-4">
-      {/* Floating HUD Container with adaptive max-width */}
       <div
         className={`w-full mx-auto px-3 sm:px-6 transition-all duration-300 ${
           scrolled ? "max-w-5xl" : "max-w-6xl"
@@ -77,24 +113,38 @@ export const Nav: React.FC<{
             boxShadow: scrolled ? "var(--shadow-lift)" : "none",
           }}
         >
-          {/* Brand Logo - Scaled for smaller phones */}
-          <a
-            href="#top"
-            onClick={(e) => handleNavClick(e, "#top")}
-            className="flex items-center gap-2 sm:gap-3 group relative z-10 shrink-0"
-          >
-            <div className="transition-transform duration-300 group-hover:scale-105 shrink-0">
-              <PulseMark className="w-7 h-7 sm:w-8 sm:h-8" />
-            </div>
-            <span className="bp-display font-semibold text-sm sm:text-base md:text-lg tracking-tight flex items-center gap-1">
-              <span style={{ color: "var(--ink)" }}>BytePulse</span>
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-fuchsia-500 font-bold">
-                Tech
-              </span>
-            </span>
-          </a>
+          {/* Brand Logo & Smart Back Action */}
+          <div className="flex items-center gap-3">
+            {showBackButton && (
+              <button
+                onClick={handleBack}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs bp-mono border transition-all hover:opacity-80 active:scale-95 cursor-pointer"
+                style={{ borderColor: "var(--line)", color: "var(--ink)" }}
+                aria-label="Go back to previous position"
+              >
+                <ArrowLeft size={14} />
+                <span>Back</span>
+              </button>
+            )}
 
-          {/* Desktop Navigation Links (Large Desktop & Up) */}
+            <a
+              href="#top"
+              onClick={(e) => handleNavClick(e, "#top")}
+              className="flex items-center gap-2 sm:gap-3 group relative z-10 shrink-0"
+            >
+              <div className="transition-transform duration-300 group-hover:scale-105 shrink-0">
+                <PulseMark className="w-7 h-7 sm:w-8 sm:h-8" />
+              </div>
+              <span className="bp-display font-semibold text-sm sm:text-base md:text-lg tracking-tight flex items-center gap-1">
+                <span style={{ color: "var(--ink)" }}>BytePulse</span>
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-fuchsia-500 font-bold">
+                  Tech
+                </span>
+              </span>
+            </a>
+          </div>
+
+          {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 relative z-10">
             {EXTENDED_NAV_LINKS.map((l) => (
               <a
@@ -121,9 +171,9 @@ export const Nav: React.FC<{
             ))}
           </nav>
 
-          {/* Right Action Bar (Tablet/Desktop) */}
+          {/* Right Action Bar */}
           <div className="hidden md:flex items-center gap-2 xl:gap-3 relative z-10 shrink-0">
-            {/* Live Clock HUD Badge (Hidden on medium, visible on large) */}
+            {/* Live Clock HUD Badge */}
             <div
               className="hidden lg:flex bp-mono items-center gap-1.5 xl:gap-2 text-[10px] xl:text-[11px] font-medium px-2.5 xl:px-3 py-1.5 rounded-full backdrop-blur-md whitespace-nowrap"
               style={{
@@ -185,7 +235,7 @@ export const Nav: React.FC<{
             </a>
           </div>
 
-          {/* Mobile & Tablet Toggle Controls */}
+          {/* Mobile Toggle Controls */}
           <div className="lg:hidden flex items-center gap-1.5 sm:gap-2 relative z-10 shrink-0">
             <button
               onClick={onToggleTheme}
@@ -199,7 +249,7 @@ export const Nav: React.FC<{
             >
               {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
             </button>
-            
+
             <button
               onClick={() => setMenuOpen((v) => !v)}
               aria-label="Toggle menu"
@@ -215,7 +265,7 @@ export const Nav: React.FC<{
           </div>
         </div>
 
-        {/* Animated Mobile & Tablet Drawer */}
+        {/* Animated Mobile Drawer */}
         <AnimatePresence>
           {menuOpen && (
             <motion.div
@@ -261,7 +311,6 @@ export const Nav: React.FC<{
                 className="pt-3 border-t flex flex-col gap-3"
                 style={{ borderColor: "var(--line)" }}
               >
-                {/* Mobile Clock Badge */}
                 <div
                   className="bp-mono flex items-center justify-between text-xs px-3.5 py-2.5 rounded-xl"
                   style={{
