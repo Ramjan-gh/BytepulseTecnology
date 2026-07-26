@@ -198,19 +198,19 @@ export const TESTIMONIALS: Testimonial[] = [
   {
     quote:
       "They shipped in six weeks what our last vendor couldn't finish in six months, and it hasn't gone down once.",
-    name: "Amara Chowdhury",
-    role: "COO, StormyMart",
+    name: "Sumon Hussen",
+    role: "Co-Founder, StormyMart",
   },
   {
     quote:
       "BytePulse felt like an extension of our own team from the first call — sharp questions, clear timelines, no surprises.",
-    name: "David Ferreira",
+    name: "Rina Gupta",
     role: "Founder, SplitShare",
   },
   {
     quote:
       "Our field team finally has software that works the way they do, offline included. Adoption was immediate.",
-    name: "Priya Nair",
+    name: "Rajibul Islam",
     role: "Ops Director, Invoice-Maker",
   },
 ];

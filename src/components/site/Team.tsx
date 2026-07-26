@@ -49,8 +49,8 @@ const FOUNDERS: CoFounder[] = [
     ],
     stack: ["Node.js", "Express", "PostgreSQL", "Prisma"],
     github: "https://github.com/Rana76-u",
-    linkedin: "https://linkedin.com",
-    portfolio: "https://my-portfolio-rafiqul.vercel.app/",
+    linkedin: "https://www.linkedin.com/in/md-rafiqul-islam-rana",
+    portfolio: "https://rana76-u.github.io/My-Portfolio/",
   },
 ];
 
