@@ -3,8 +3,25 @@ import { useEffect, useRef, useState } from "react";
 /** Fires `visible = true` once the element crosses the viewport. */
 export function useReveal<T extends HTMLElement>(threshold = 0.15) {
   const ref = useRef<T>(null);
-  // Disabled for 100% performance - always visible
-  return { ref, visible: true };
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return { ref, visible };
 }
 
 export function useScrolled(offset = 12) {

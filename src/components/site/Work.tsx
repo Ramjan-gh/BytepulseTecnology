@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 import { ArrowUpRight, FolderGit2, ExternalLink, ArrowRight, Layout } from "lucide-react";
 import { PROJECTS } from "./data";
+import { Reveal } from "./Reveal";
 
 export const Work: React.FC<{ onSeeAllWorks: () => void }> = memo(({ onSeeAllWorks }) => {
   const featuredProjects = PROJECTS.slice(0, 4);
@@ -11,66 +12,68 @@ export const Work: React.FC<{ onSeeAllWorks: () => void }> = memo(({ onSeeAllWor
       className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-20 md:py-28"
     >
       {/* Header Area */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-14 gap-6">
-        <div>
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bp-mono text-[11px] font-semibold uppercase tracking-wider mb-4 border"
-            style={{
-              background: "var(--accent-soft)",
-              color: "var(--accent)",
-              borderColor: "rgba(6, 182, 212, 0.2)",
-            }}
-          >
-            <FolderGit2 size={12} />
-            <span>Selected Portfolio</span>
+      <Reveal>
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-14 gap-6">
+          <div>
+            <div
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bp-mono text-[11px] font-semibold uppercase tracking-wider mb-4 border"
+              style={{
+                background: "var(--accent-soft)",
+                color: "var(--accent)",
+                borderColor: "rgba(6, 182, 212, 0.2)",
+              }}
+            >
+              <FolderGit2 size={12} />
+              <span>Selected Portfolio</span>
+            </div>
+
+            <h2
+              className="bp-display font-bold text-3xl sm:text-4xl md:text-5xl max-w-xl tracking-tight"
+              style={{ color: "var(--ink)" }}
+            >
+              A few products{" "}
+              <span className="opacity-60 font-normal block sm:inline">
+                we've shipped.
+              </span>
+            </h2>
           </div>
 
-          <h2
-            className="bp-display font-bold text-3xl sm:text-4xl md:text-5xl max-w-xl tracking-tight"
-            style={{ color: "var(--ink)" }}
+          <p
+            className="bp-mono text-xs sm:text-sm max-w-xs leading-relaxed"
+            style={{ color: "var(--muted)" }}
           >
-            A few products{" "}
-            <span className="opacity-60 font-normal block sm:inline">
-              we've shipped.
-            </span>
-          </h2>
+            A sample of high-impact production platforms engineered for
+            performance and scalability. Click any card to view the live demo.
+          </p>
         </div>
-
-        <p
-          className="bp-mono text-xs sm:text-sm max-w-xs leading-relaxed"
-          style={{ color: "var(--muted)" }}
-        >
-          A sample of high-impact production platforms engineered for
-          performance and scalability. Click any card to view the live demo.
-        </p>
-      </div>
+      </Reveal>
 
       {/* High-Performance 60fps Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-        {featuredProjects.map((p) => {
+        {featuredProjects.map((p, i) => {
           const projectLink = p.link || p.url || "#";
 
           return (
-            <div
-              key={p.name}
-              className="h-full"
-              style={{
-                contentVisibility: "auto",
-                containIntrinsicSize: "0 420px", // Pre-reserves vertical space to prevent layout shifts
-              }}
-            >
-              <a
-                href={projectLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative rounded-2xl p-6 sm:p-7 h-full flex flex-col justify-between border transition-colors duration-150 block cursor-pointer"
+            <Reveal key={p.name} delay={i * 75}>
+              <div
+                className="h-full"
                 style={{
-                  background: "var(--surface)",
-                  borderColor: "var(--line)",
-                  transform: "translateZ(0)", // Force GPU layer creation
-                  willChange: "transform",
+                  contentVisibility: "auto",
+                  containIntrinsicSize: "0 420px", // Pre-reserves vertical space to prevent layout shifts
                 }}
               >
+                <a
+                  href={projectLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative rounded-2xl p-6 sm:p-7 h-full flex flex-col justify-between border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg block cursor-pointer"
+                  style={{
+                    background: "var(--surface)",
+                    borderColor: "var(--line)",
+                    transform: "translateZ(0)", // Force GPU layer creation
+                    willChange: "transform",
+                  }}
+                >
                 <div>
                   {/* Category & Badge */}
                   <div className="flex items-center justify-between gap-2 mb-5">
@@ -162,37 +165,40 @@ export const Work: React.FC<{ onSeeAllWorks: () => void }> = memo(({ onSeeAllWor
                   ))}
                 </div>
               </a>
-            </div>
+              </div>
+            </Reveal>
           );
         })}
       </div>
 
       {/* Action Footer */}
-      <div className="mt-12 flex justify-center">
-        <button
-          type="button"
-          onClick={onSeeAllWorks}
-          className="group inline-flex items-center gap-3 px-6 py-3 rounded-full border transition-colors duration-150 hover:border-[var(--accent)] cursor-pointer"
-          style={{
-            background: "var(--surface)",
-            color: "var(--ink)",
-            borderColor: "var(--line)",
-          }}
-        >
-          <span className="bp-mono text-xs font-semibold uppercase tracking-wider">
-            See All Works ({PROJECTS.length})
-          </span>
-          <div
-            className="p-1 rounded-full transition-colors duration-150 group-hover:bg-[var(--accent)] group-hover:text-white"
+      <Reveal>
+        <div className="mt-12 flex justify-center">
+          <button
+            type="button"
+            onClick={onSeeAllWorks}
+            className="group inline-flex items-center gap-3 px-6 py-3 rounded-full border transition-all duration-300 hover:border-[var(--accent)] hover:-translate-y-1 hover:shadow-lg cursor-pointer"
             style={{
-              background: "var(--surface-2)",
+              background: "var(--surface)",
               color: "var(--ink)",
+              borderColor: "var(--line)",
             }}
           >
-            <ArrowRight size={14} />
-          </div>
-        </button>
-      </div>
+            <span className="bp-mono text-xs font-semibold uppercase tracking-wider">
+              See All Works ({PROJECTS.length})
+            </span>
+            <div
+              className="p-1 rounded-full transition-all duration-300 group-hover:bg-[var(--accent)] group-hover:text-white group-hover:scale-110"
+              style={{
+                background: "var(--surface-2)",
+                color: "var(--ink)",
+              }}
+            >
+              <ArrowRight size={14} />
+            </div>
+          </button>
+        </div>
+      </Reveal>
     </section>
   );
 });

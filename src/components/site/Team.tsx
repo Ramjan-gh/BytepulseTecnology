@@ -108,7 +108,7 @@ export const Team: React.FC = () => {
           return (
             <Reveal key={f.name} delay={i * 100}>
               <div
-                className="group relative rounded-3xl border transition-all duration-300 overflow-hidden flex flex-col justify-between h-full sm:hover:shadow-2xl"
+                className="group relative rounded-3xl border transition-all duration-300 overflow-hidden flex flex-col justify-between h-full hover:shadow-2xl hover:-translate-y-1"
                 style={{ borderColor: "var(--line)", background: "var(--surface)" }}
                 aria-label={`Profile card for ${f.name}`}
               >

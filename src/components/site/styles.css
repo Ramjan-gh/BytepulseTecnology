@@ -131,12 +131,13 @@
   color: var(--btn-text);
   font-weight: 600;
   border-radius: 9999px;
-  transition: transform 0.15s ease, opacity 0.15s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
 }
 
-.bp-btn-primary:hover { 
-  transform: translateY(-1px); 
+.bp-btn-primary:hover {
+  transform: translateY(-2px);
   opacity: 0.95;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .bp-btn-primary:active {
@@ -149,13 +150,14 @@
   background: var(--surface);
   font-weight: 500;
   border-radius: 9999px;
-  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
-.bp-btn-ghost:hover { 
-  border-color: var(--accent-border); 
-  background: var(--accent-soft); 
+.bp-btn-ghost:hover {
+  border-color: var(--accent-border);
+  background: var(--accent-soft);
   color: var(--accent);
+  transform: translateY(-1px);
 }
 
 .bp-btn-primary:focus-visible, 

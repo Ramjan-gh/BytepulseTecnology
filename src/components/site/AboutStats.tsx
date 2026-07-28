@@ -15,7 +15,7 @@ const StatCard: React.FC<{ stat: (typeof STATS)[number]; index: number }> = memo
     return (
       <div
         ref={ref}
-        className={`group relative rounded-2xl p-5 sm:p-6 border ${
+        className={`group relative rounded-2xl p-5 sm:p-6 border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
           visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         }`}
         style={{

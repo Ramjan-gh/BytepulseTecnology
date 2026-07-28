@@ -23,8 +23,8 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
 
     // Optimized particle animation - reduced particles for performance
     const isMobile = window.innerWidth < 768;
-    const particleCount = isMobile ? 20 : 35; // Reduced count
-    if (isMobile) return; // Skip on mobile for max performance
+    const particleCount = isMobile ? 15 : 35; // Reduced count for mobile
+    // Enable on mobile with fewer particles
 
     let animationFrameId: number;
     let width = 0;

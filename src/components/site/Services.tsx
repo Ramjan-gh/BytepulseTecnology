@@ -88,7 +88,7 @@ export const Services: React.FC<ServicesProps> = ({
               }}
             >
               <div
-                className="group relative rounded-2xl p-6 sm:p-7 h-full flex flex-col justify-between border transition-colors duration-200 hover:border-[var(--accent)]"
+                className="group relative rounded-2xl p-6 sm:p-7 h-full flex flex-col justify-between border transition-all duration-300 hover:border-[var(--accent)] hover:-translate-y-1 hover:shadow-lg"
                 style={{
                   background: "var(--surface)",
                   borderColor: "var(--line)",

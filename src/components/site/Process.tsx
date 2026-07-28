@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
 import { GitCommit, Workflow, CheckCircle2, ChevronDown } from "lucide-react";
 import { PROCESS } from "./data";
+import { Reveal } from "./Reveal";
 
 export const Process: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -29,38 +30,40 @@ export const Process: React.FC = () => {
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-20 md:py-32">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 sm:mb-20 gap-6">
-          <div>
-            <div
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bp-mono text-[11px] font-semibold uppercase tracking-wider mb-4 border"
-              style={{
-                background: "var(--accent-soft)",
-                color: "var(--accent)",
-                borderColor: "rgba(6, 182, 212, 0.2)",
-              }}
-            >
-              <Workflow size={12} />
-              <span>Execution Methodology</span>
+        <Reveal>
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 sm:mb-20 gap-6">
+            <div>
+              <div
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full bp-mono text-[11px] font-semibold uppercase tracking-wider mb-4 border"
+                style={{
+                  background: "var(--accent-soft)",
+                  color: "var(--accent)",
+                  borderColor: "rgba(6, 182, 212, 0.2)",
+                }}
+              >
+                <Workflow size={12} />
+                <span>Execution Methodology</span>
+              </div>
+
+              <h2
+                className="bp-display font-bold text-3xl sm:text-4xl md:text-5xl max-w-xl tracking-tight"
+                style={{ color: "var(--ink)" }}
+              >
+                Five steps, in order,{" "}
+                <span className="opacity-60 font-normal block sm:inline">
+                  every single time.
+                </span>
+              </h2>
             </div>
 
-            <h2
-              className="bp-display font-bold text-3xl sm:text-4xl md:text-5xl max-w-xl tracking-tight"
-              style={{ color: "var(--ink)" }}
+            <p
+              className="bp-mono text-xs sm:text-sm max-w-xs leading-relaxed"
+              style={{ color: "var(--muted)" }}
             >
-              Five steps, in order,{" "}
-              <span className="opacity-60 font-normal block sm:inline">
-                every single time.
-              </span>
-            </h2>
+              Structured, predictable execution designed to eliminate friction and launch on time.
+            </p>
           </div>
-
-          <p
-            className="bp-mono text-xs sm:text-sm max-w-xs leading-relaxed"
-            style={{ color: "var(--muted)" }}
-          >
-            Structured, predictable execution designed to eliminate friction and launch on time.
-          </p>
-        </div>
+        </Reveal>
 
         {/* Timeline Container */}
         <div className="relative max-w-3xl mx-auto md:ml-12">
@@ -81,15 +84,15 @@ export const Process: React.FC = () => {
 
           {/* Steps List */}
           <div className="flex flex-col space-y-8 sm:space-y-12">
-            {PROCESS.map((step) => {
+            {PROCESS.map((step, i) => {
               // Safe type-agnostic string comparison
               const isOpen = String(expandedStep) === String(step.step);
 
               return (
-                <div
-                  key={step.step}
-                  className="group relative flex gap-5 sm:gap-8 items-start"
-                >
+                <Reveal key={step.step} delay={i * 100}>
+                  <div
+                    className="group relative flex gap-5 sm:gap-8 items-start"
+                  >
                   {/* Step Circle Marker */}
                   <div className="relative z-10 flex items-center justify-center shrink-0">
                     <span
@@ -178,6 +181,7 @@ export const Process: React.FC = () => {
                     </AnimatePresence>
                   </div>
                 </div>
+                </Reveal>
               );
             })}
           </div>
